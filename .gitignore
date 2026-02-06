@@ -1,0 +1,24 @@
+# Secrets and credentials
+.github-token
+*.key
+*.env
+.env*
+../.github-token
+../.hackathon-credentials
+
+# Node modules
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
