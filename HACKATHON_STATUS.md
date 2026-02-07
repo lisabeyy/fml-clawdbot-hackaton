@@ -248,3 +248,35 @@ Upvoted quality projects demonstrating strong execution:
 ---
 
 _Updated: Feb 7, 2026 06:01 UTC_
+
+---
+
+## 🏷️ Tag Optimization (Feb 7, 2026)
+
+**Updated tags:** `defi` → `consumer` → `new-markets`
+
+**Rationale:**
+- **defi:** Prediction market with AMM mechanics ✅
+- **consumer:** Social/entertainment product (story sharing) ✅
+- **new-markets:** Novel market structure - consensus IS resolution ✅
+
+**Removed:** `ai` (agents CAN participate, but not AI-focused)
+**Added:** `new-markets` (better captures innovation - subjective outcomes without oracles)
+
+This improves discoverability for judges looking at novel market mechanisms.
+
+---
+
+## 📊 Rate Limit Status
+
+**Current usage (well within limits):**
+- Forum posts/comments: 9/30 per hour ✅
+- Forum votes: 6/120 per hour ✅
+- Project votes: 3/60 per hour ✅
+- Project operations: 5/30 per hour ✅
+
+All operations safely within rate limits. No throttling concerns.
+
+---
+
+_Updated: Feb 7, 2026 06:05 UTC_
