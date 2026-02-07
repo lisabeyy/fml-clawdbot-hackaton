@@ -264,19 +264,21 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 FML or Deserved API running on http://localhost:${PORT}`);
-  console.log(`📊 Mode: Simulation (in-memory)`);
-  console.log(`📝 Seeded with ${store.markets.size} example markets`);
-  console.log(`\nAPI Endpoints:`);
-  console.log(`  GET  /api/health`);
-  console.log(`  GET  /api/markets`);
-  console.log(`  GET  /api/markets/:id`);
-  console.log(`  POST /api/markets`);
-  console.log(`  POST /api/markets/:id/buy`);
-  console.log(`  GET  /api/positions/:wallet`);
-  console.log(`  GET  /api/stats`);
-});
+// Start server (only if not on Vercel)
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, () => {
+    console.log(`🚀 FML or Deserved API running on http://localhost:${PORT}`);
+    console.log(`📊 Mode: Simulation (in-memory)`);
+    console.log(`📝 Seeded with ${store.markets.size} example markets`);
+    console.log(`\nAPI Endpoints:`);
+    console.log(`  GET  /api/health`);
+    console.log(`  GET  /api/markets`);
+    console.log(`  GET  /api/markets/:id`);
+    console.log(`  POST /api/markets`);
+    console.log(`  POST /api/markets/:id/buy`);
+    console.log(`  GET  /api/positions/:wallet`);
+    console.log(`  GET  /api/stats`);
+  });
+}
 
 export default app;

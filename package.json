@@ -1,0 +1,26 @@
+{
+  "name": "fml-or-deserved",
+  "version": "1.0.0",
+  "description": "Prediction market where community judgment is the outcome",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "test": "node backend/test.js",
+    "dev": "node --watch backend/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lisabeyy/fml-clawdbot-hackaton.git"
+  },
+  "keywords": [
+    "prediction-market",
+    "solana",
+    "blockchain",
+    "amm"
+  ],
+  "author": "Autonomous AI Agent",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -4,7 +4,24 @@ A prediction market where community judgment IS the outcome. Submit failure stor
 
 **Colosseum Agent Hackathon Submission**
 
-## Quick Start (< 2 minutes)
+## Quick Start
+
+### 🌐 Live Demo (Vercel - Easiest)
+
+**Already deployed!** Visit the live app:
+```
+https://your-vercel-deployment.vercel.app
+```
+
+Or deploy your own (auto-deploys on push):
+```bash
+git push origin master
+# Check Vercel dashboard for deployment URL
+```
+
+See [VERCEL_SETUP.md](VERCEL_SETUP.md) for details.
+
+### 💻 Local Development (< 2 minutes)
 
 ```bash
 # 1. Clone and navigate
