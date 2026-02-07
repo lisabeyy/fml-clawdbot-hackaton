@@ -3,115 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FML or Deserved? - Prediction Market</title>
+    <title>FML or Deserved? 🎯</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; }
-        .deserved-bar { background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%); }
-        .fml-bar { background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { 
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        .btn-deserved {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .btn-fml {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        .story-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
     </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Navbar -->
-    <nav class="bg-white border-b border-gray-200 shadow-sm">
+<body class="text-gray-900">
+    <!-- Header -->
+    <div class="bg-white shadow-lg">
         <div class="container mx-auto px-4 py-4 max-w-6xl">
             <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-bold text-gray-900">🎯 FML or Deserved?</h1>
-                <div class="flex space-x-4">
-                    <button onclick="showView('markets')" class="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium">Markets</button>
-                    <button onclick="showView('create')" class="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium">Create</button>
-                    <button onclick="showView('portfolio')" class="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium">Portfolio</button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container mx-auto px-4 py-8 max-w-6xl">
-        <!-- Markets View -->
-        <div id="markets-view">
-            <div class="mb-6">
-                <h2 class="text-3xl font-bold text-gray-900 mb-2">Judge the Stories</h2>
-                <p class="text-gray-600">Did they deserve it, or was it pure bad luck? You decide.</p>
-            </div>
-            <div id="markets-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-        </div>
-
-        <!-- Create View -->
-        <div id="create-view" class="hidden max-w-2xl mx-auto">
-            <div class="mb-6">
-                <h2 class="text-3xl font-bold text-gray-900 mb-2">Share Your Story</h2>
-                <p class="text-gray-600">Tell us about a time things went wrong.</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Your Story</label>
-                    <textarea id="story-content" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 resize-none"
-                        rows="5" 
-                        maxlength="280"
-                        placeholder="Today I tried to impress my date by cooking..."></textarea>
-                    <div class="mt-2 text-sm text-gray-600 text-right">
-                        <span id="char-count">0</span> / 280
+                <div class="flex items-center space-x-3">
+                    <span class="text-4xl">🎯</span>
+                    <div>
+                        <h1 class="text-2xl font-bold gradient-text">FML or Deserved?</h1>
+                        <p class="text-xs text-gray-600">Let the internet judge your life</p>
                     </div>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Initial Liquidity (SOL)</label>
-                    <input type="number" id="liquidity" value="0.1" step="0.1" min="0.1" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
-                </div>
-                <button onclick="createMarket()" 
-                    class="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
-                    Create Market
+                <button onclick="showView('create')" class="btn-primary text-white px-6 py-3 rounded-full font-bold shadow-lg">
+                    📝 Post Your Story
                 </button>
             </div>
         </div>
+    </div>
 
-        <!-- Portfolio View -->
-        <div id="portfolio-view" class="hidden">
-            <div class="mb-6">
-                <h2 class="text-3xl font-bold text-gray-900 mb-2">Your Portfolio</h2>
-                <p class="text-gray-600">Track your positions</p>
+    <!-- Hero Section (Story Creation) -->
+    <div id="create-hero" class="container mx-auto px-4 py-12 max-w-4xl">
+        <div class="story-card rounded-3xl shadow-2xl p-8 mb-8">
+            <div class="text-center mb-8">
+                <h2 class="text-4xl font-black mb-3">😱 What Happened to You?</h2>
+                <p class="text-xl text-gray-600">Share your disaster. Let the world decide: FML or Deserved?</p>
             </div>
-            <div id="positions-list"></div>
-        </div>
-
-        <!-- Market Detail Modal -->
-        <div id="market-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
-                <div class="flex justify-between items-start mb-4">
-                    <h3 id="modal-content" class="text-2xl font-bold text-gray-900"></h3>
-                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            
+            <div class="space-y-6">
+                <div>
+                    <textarea id="hero-story" 
+                        class="w-full px-6 py-4 text-lg border-2 border-gray-200 rounded-2xl focus:border-purple-500 focus:ring-4 focus:ring-purple-200 resize-none transition-all"
+                        rows="4" 
+                        maxlength="280"
+                        placeholder="Today I... (be honest, be funny, be real)"></textarea>
+                    <div class="flex justify-between items-center mt-2 px-2">
+                        <div class="text-sm text-gray-500">
+                            <span class="font-medium">Examples:</span> "Got fired for microwaving fish" • "Crashed my car showing off" • "Locked myself out naked"
+                        </div>
+                        <div class="text-sm font-medium" id="hero-char-count">
+                            <span class="text-gray-400">0</span><span class="text-gray-300">/280</span>
+                        </div>
+                    </div>
                 </div>
-                <div id="modal-chart" class="mb-6"></div>
-                <div id="modal-stats" class="grid grid-cols-3 gap-4 mb-6"></div>
-                <div class="bg-white rounded-lg border border-gray-200 p-4">
-                    <h4 class="font-bold mb-4">Place Your Judgment</h4>
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <button onclick="selectSide('deserved')" id="btn-deserved"
-                            class="py-3 px-4 rounded-lg font-bold bg-gray-100 text-gray-700 hover:bg-red-500 hover:text-white">
-                            😈 Deserved
-                        </button>
-                        <button onclick="selectSide('fml')" id="btn-fml"
-                            class="py-3 px-4 rounded-lg font-bold bg-gray-100 text-gray-700 hover:bg-blue-500 hover:text-white">
-                            🍀 FML
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">💰 Starting Pool (SOL)</label>
+                        <input type="number" id="hero-liquidity" value="0.1" step="0.1" min="0.1" 
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-4 focus:ring-purple-200 transition-all">
+                        <p class="text-xs text-gray-500 mt-1">You earn 2% of all trading on your story!</p>
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="createMarketHero()" id="hero-submit-btn"
+                            class="w-full btn-primary text-white py-4 rounded-xl font-bold text-lg shadow-xl">
+                            🚀 Launch Your Story
                         </button>
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Amount (SOL)</label>
-                        <input type="number" id="trade-amount" value="0.01" step="0.01" min="0.001"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg">
+                </div>
+
+                <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4">
+                    <div class="flex items-start space-x-3">
+                        <span class="text-2xl">💡</span>
+                        <div class="text-sm text-gray-700">
+                            <p class="font-bold mb-1">How it works:</p>
+                            <ul class="space-y-1 list-disc list-inside">
+                                <li>Share your story</li>
+                                <li>Others bet: <span class="font-bold text-red-500">Deserved</span> or <span class="font-bold text-blue-500">FML (unlucky)</span></li>
+                                <li>After 10 votes or 48 hours, market resolves</li>
+                                <li>Winners split the pot. You earn from controversy!</li>
+                            </ul>
+                        </div>
                     </div>
-                    <button onclick="executeTrade()" id="trade-btn"
-                        class="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
-                        Buy Shares
-                    </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Markets Feed -->
+    <div id="markets-view" class="container mx-auto px-4 py-8 max-w-6xl">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-3xl font-black text-white">🔥 Hot Stories</h2>
+            <div class="flex space-x-2 bg-white rounded-full p-1 shadow-lg">
+                <button onclick="filterMarkets('active')" id="filter-active" class="px-4 py-2 rounded-full font-medium text-sm transition-all bg-purple-600 text-white">
+                    Active
+                </button>
+                <button onclick="filterMarkets('resolved')" id="filter-resolved" class="px-4 py-2 rounded-full font-medium text-sm transition-all text-gray-600 hover:bg-gray-100">
+                    Resolved
+                </button>
+            </div>
+        </div>
+        <div id="markets-list" class="space-y-4"></div>
+    </div>
+
+    <!-- Market Detail Modal -->
+    <div id="market-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
+        <div class="story-card rounded-3xl max-w-2xl w-full p-8 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-6">
+                <h3 id="modal-content" class="text-2xl font-bold text-gray-900 pr-8"></h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-3xl font-light">&times;</button>
+            </div>
+
+            <!-- Judgment Bars -->
+            <div id="modal-chart" class="mb-6"></div>
+
+            <!-- Stats -->
+            <div id="modal-stats" class="grid grid-cols-3 gap-4 mb-8 text-center"></div>
+
+            <!-- Trading Interface -->
+            <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6">
+                <h4 class="font-bold text-xl mb-4 text-center">⚖️ Cast Your Judgment</h4>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <button onclick="selectSide('deserved')" id="btn-deserved"
+                        class="py-4 px-4 rounded-xl font-bold text-lg transition-all bg-gray-100 text-gray-700 hover:scale-105">
+                        😈 Deserved It
+                    </button>
+                    <button onclick="selectSide('fml')" id="btn-fml"
+                        class="py-4 px-4 rounded-xl font-bold text-lg transition-all bg-gray-100 text-gray-700 hover:scale-105">
+                        🍀 Pure FML
+                    </button>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Amount (SOL)</label>
+                    <div class="flex space-x-2">
+                        <input type="number" id="trade-amount" value="0.01" step="0.01" min="0.001"
+                            class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-4 focus:ring-purple-200">
+                        <div class="flex space-x-1">
+                            <button onclick="setAmount(0.01)" class="px-3 py-2 bg-white rounded-lg text-sm font-medium hover:bg-gray-100">0.01</button>
+                            <button onclick="setAmount(0.05)" class="px-3 py-2 bg-white rounded-lg text-sm font-medium hover:bg-gray-100">0.05</button>
+                            <button onclick="setAmount(0.1)" class="px-3 py-2 bg-white rounded-lg text-sm font-medium hover:bg-gray-100">0.1</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="executeTrade()" id="trade-btn"
+                    class="w-full btn-primary text-white py-4 rounded-xl font-bold text-lg shadow-xl">
+                    Place Bet
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio (Hidden by default) -->
+    <div id="portfolio-view" class="hidden container mx-auto px-4 py-8 max-w-4xl">
+        <div class="story-card rounded-3xl p-8 mb-8">
+            <h2 class="text-3xl font-black mb-6">💰 Your Portfolio</h2>
+            <div id="positions-list"></div>
+        </div>
+    </div>
+
     <script>
-        // Use relative URL for production (Vercel), localhost for development
         const API_BASE = window.location.hostname === 'localhost' 
             ? 'http://localhost:3000/api' 
             : '/api';
@@ -119,87 +204,119 @@
         
         let currentMarket = null;
         let selectedSide = 'deserved';
+        let currentFilter = 'active';
 
-        // Initialize
-        document.getElementById('story-content').addEventListener('input', (e) => {
-            document.getElementById('char-count').textContent = e.target.value.length;
+        // Character counter for hero
+        document.getElementById('hero-story').addEventListener('input', (e) => {
+            const count = e.target.value.length;
+            const display = document.getElementById('hero-char-count');
+            display.innerHTML = `<span class="${count > 260 ? 'text-red-500' : 'text-gray-900'}">${count}</span><span class="text-gray-300">/280</span>`;
         });
 
-        // Navigation
         function showView(view) {
+            document.getElementById('create-hero').classList.add('hidden');
             document.getElementById('markets-view').classList.add('hidden');
-            document.getElementById('create-view').classList.add('hidden');
             document.getElementById('portfolio-view').classList.add('hidden');
-            document.getElementById(`${view}-view`).classList.remove('hidden');
             
-            if (view === 'markets') loadMarkets();
-            if (view === 'portfolio') loadPortfolio();
+            if (view === 'markets') {
+                document.getElementById('markets-view').classList.remove('hidden');
+                loadMarkets();
+            } else if (view === 'create') {
+                document.getElementById('create-hero').classList.remove('hidden');
+                document.getElementById('markets-view').classList.remove('hidden');
+                loadMarkets();
+            } else if (view === 'portfolio') {
+                document.getElementById('portfolio-view').classList.remove('hidden');
+                loadPortfolio();
+            }
         }
 
-        // Load markets
+        function setAmount(amount) {
+            document.getElementById('trade-amount').value = amount;
+        }
+
+        function filterMarkets(filter) {
+            currentFilter = filter;
+            document.getElementById('filter-active').className = filter === 'active' 
+                ? 'px-4 py-2 rounded-full font-medium text-sm transition-all bg-purple-600 text-white'
+                : 'px-4 py-2 rounded-full font-medium text-sm transition-all text-gray-600 hover:bg-gray-100';
+            document.getElementById('filter-resolved').className = filter === 'resolved'
+                ? 'px-4 py-2 rounded-full font-medium text-sm transition-all bg-purple-600 text-white'
+                : 'px-4 py-2 rounded-full font-medium text-sm transition-all text-gray-600 hover:bg-gray-100';
+            loadMarkets();
+        }
+
         async function loadMarkets() {
-            const response = await fetch(`${API_BASE}/markets?filter=active`);
-            const markets = await response.json();
-            
-            const html = markets.map(market => `
-                <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition p-6 border border-gray-200 cursor-pointer"
-                     onclick="openMarket('${market.id}')">
-                    <p class="text-gray-800 mb-4">${market.content}</p>
-                    ${renderPriceChart(market.deserved_percent, market.fml_percent)}
-                    <div class="mt-4 flex justify-between text-sm text-gray-600">
-                        <span>${market.vote_count} votes</span>
-                        <span>${market.time_remaining || 'Ended'}</span>
+            try {
+                const response = await fetch(`${API_BASE}/markets?filter=${currentFilter}`);
+                const markets = await response.json();
+                
+                const html = markets.map(market => `
+                    <div class="story-card rounded-2xl shadow-lg hover:shadow-2xl transition-all p-6 card-hover cursor-pointer"
+                         onclick="openMarket('${market.id}')">
+                        <p class="text-lg mb-4 leading-relaxed">${market.content}</p>
+                        ${renderPriceChart(market.deserved_percent, market.fml_percent)}
+                        <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
+                            <span class="font-medium">🗳️ ${market.vote_count} votes</span>
+                            <span class="font-medium">${market.total_volume} SOL traded</span>
+                            ${market.time_remaining ? `<span class="font-medium">⏰ ${market.time_remaining}</span>` : '<span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">RESOLVED</span>'}
+                        </div>
                     </div>
-                </div>
-            `).join('');
-            
-            document.getElementById('markets-list').innerHTML = html || '<p class="text-gray-600">No markets found</p>';
+                `).join('');
+                
+                document.getElementById('markets-list').innerHTML = html || '<p class="text-white text-center text-xl">No markets found. Be the first to post!</p>';
+            } catch (error) {
+                console.error('Failed to load markets:', error);
+                document.getElementById('markets-list').innerHTML = '<p class="text-white text-center">Failed to load markets. Check console.</p>';
+            }
         }
 
-        // Render price chart
         function renderPriceChart(deserved, fml) {
             return `
-                <div class="space-y-2">
-                    <div class="flex justify-between text-sm font-medium">
-                        <span class="text-red-600">Deserved</span>
-                        <span class="text-gray-700">${deserved}%</span>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-bold text-red-500">😈 Deserved</span>
+                        <span class="text-2xl font-black text-red-600">${deserved}%</span>
                     </div>
-                    <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden flex">
-                        <div class="deserved-bar h-full transition-all" style="width: ${deserved}%"></div>
-                        <div class="fml-bar h-full transition-all" style="width: ${fml}%"></div>
+                    <div class="w-full h-4 bg-gray-200 rounded-full overflow-hidden flex">
+                        <div class="h-full transition-all duration-500 bg-gradient-to-r from-red-400 to-red-600" style="width: ${deserved}%"></div>
+                        <div class="h-full transition-all duration-500 bg-gradient-to-r from-blue-400 to-blue-600" style="width: ${fml}%"></div>
                     </div>
-                    <div class="flex justify-between text-sm font-medium">
-                        <span class="text-gray-700">${fml}%</span>
-                        <span class="text-blue-600">FML</span>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-black text-blue-600">${fml}%</span>
+                        <span class="text-sm font-bold text-blue-500">🍀 Pure FML</span>
                     </div>
                 </div>
             `;
         }
 
-        // Open market detail
         async function openMarket(id) {
-            const response = await fetch(`${API_BASE}/markets/${id}`);
-            const market = await response.json();
-            currentMarket = market;
-            
-            document.getElementById('modal-content').textContent = market.content;
-            document.getElementById('modal-chart').innerHTML = renderPriceChart(market.deserved_percent, market.fml_percent);
-            document.getElementById('modal-stats').innerHTML = `
-                <div class="text-center">
-                    <div class="text-2xl font-bold">${market.vote_count}</div>
-                    <div class="text-sm text-gray-600">Votes</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold">${market.total_volume} SOL</div>
-                    <div class="text-sm text-gray-600">Volume</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold">${market.time_remaining || 'Ended'}</div>
-                    <div class="text-sm text-gray-600">Time Left</div>
-                </div>
-            `;
-            
-            document.getElementById('market-modal').classList.remove('hidden');
+            try {
+                const response = await fetch(`${API_BASE}/markets/${id}`);
+                const market = await response.json();
+                currentMarket = market;
+                
+                document.getElementById('modal-content').textContent = market.content;
+                document.getElementById('modal-chart').innerHTML = renderPriceChart(market.deserved_percent, market.fml_percent);
+                document.getElementById('modal-stats').innerHTML = `
+                    <div>
+                        <div class="text-3xl font-black text-purple-600">${market.vote_count}</div>
+                        <div class="text-sm text-gray-600">Votes</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-black text-purple-600">${market.total_volume}</div>
+                        <div class="text-sm text-gray-600">SOL Volume</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-black text-purple-600">${market.time_remaining || '✅'}</div>
+                        <div class="text-sm text-gray-600">${market.time_remaining ? 'Time Left' : 'Resolved'}</div>
+                    </div>
+                `;
+                
+                document.getElementById('market-modal').classList.remove('hidden');
+            } catch (error) {
+                alert('Failed to load market: ' + error.message);
+            }
         }
 
         function closeModal() {
@@ -208,14 +325,16 @@
 
         function selectSide(side) {
             selectedSide = side;
-            document.getElementById('btn-deserved').className = 
-                side === 'deserved' 
-                ? 'py-3 px-4 rounded-lg font-bold bg-red-500 text-white'
-                : 'py-3 px-4 rounded-lg font-bold bg-gray-100 text-gray-700 hover:bg-red-500 hover:text-white';
-            document.getElementById('btn-fml').className = 
-                side === 'fml'
-                ? 'py-3 px-4 rounded-lg font-bold bg-blue-500 text-white'
-                : 'py-3 px-4 rounded-lg font-bold bg-gray-100 text-gray-700 hover:bg-blue-500 hover:text-white';
+            const deservedBtn = document.getElementById('btn-deserved');
+            const fmlBtn = document.getElementById('btn-fml');
+            
+            if (side === 'deserved') {
+                deservedBtn.className = 'py-4 px-4 rounded-xl font-bold text-lg transition-all btn-deserved text-white shadow-lg scale-105';
+                fmlBtn.className = 'py-4 px-4 rounded-xl font-bold text-lg transition-all bg-gray-100 text-gray-700 hover:scale-105';
+            } else {
+                fmlBtn.className = 'py-4 px-4 rounded-xl font-bold text-lg transition-all btn-fml text-white shadow-lg scale-105';
+                deservedBtn.className = 'py-4 px-4 rounded-xl font-bold text-lg transition-all bg-gray-100 text-gray-700 hover:scale-105';
+            }
         }
 
         async function executeTrade() {
@@ -231,7 +350,7 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    alert(`✅ Bought ${result.shares.toFixed(4)} ${selectedSide} shares!`);
+                    alert(`✅ Success! You bought ${result.shares.toFixed(4)} ${selectedSide} shares!`);
                     closeModal();
                     loadMarkets();
                 } else {
@@ -242,14 +361,23 @@
             }
         }
 
-        async function createMarket() {
-            const content = document.getElementById('story-content').value;
-            const liquidity = parseFloat(document.getElementById('liquidity').value);
+        async function createMarketHero() {
+            const content = document.getElementById('hero-story').value;
+            const liquidity = parseFloat(document.getElementById('hero-liquidity').value);
             
             if (content.length < 10) {
-                alert('Story must be at least 10 characters');
+                alert('❌ Story must be at least 10 characters');
                 return;
             }
+            
+            if (content.length > 280) {
+                alert('❌ Story must be 280 characters or less');
+                return;
+            }
+            
+            const btn = document.getElementById('hero-submit-btn');
+            btn.disabled = true;
+            btn.textContent = '🚀 Launching...';
             
             try {
                 const response = await fetch(`${API_BASE}/markets`, {
@@ -259,47 +387,57 @@
                 });
                 
                 const market = await response.json();
-                alert(`✅ Market created! ID: ${market.id}`);
-                document.getElementById('story-content').value = '';
-                showView('markets');
+                
+                document.getElementById('hero-story').value = '';
+                document.getElementById('hero-char-count').innerHTML = '<span class="text-gray-400">0</span><span class="text-gray-300">/280</span>';
+                
+                alert(`🎉 Story launched! Market ID: ${market.id}`);
+                loadMarkets();
             } catch (error) {
                 alert('❌ Failed to create market: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🚀 Launch Your Story';
             }
         }
 
         async function loadPortfolio() {
-            const response = await fetch(`${API_BASE}/positions/${WALLET}`);
-            const positions = await response.json();
-            
-            if (positions.length === 0) {
-                document.getElementById('positions-list').innerHTML = 
-                    '<div class="bg-white rounded-lg shadow-md p-6 text-center"><p class="text-gray-600">No positions yet</p></div>';
-                return;
-            }
-            
-            const html = positions.map(pos => `
-                <div class="bg-white rounded-lg shadow-md p-6 mb-4">
-                    <p class="text-gray-800 mb-2">${pos.market.content}</p>
-                    <div class="flex justify-between">
-                        <div class="text-sm">
-                            ${pos.deserved_shares > 0 ? `<span class="text-red-600">Deserved: ${pos.deserved_shares}</span>` : ''}
-                            ${pos.fml_shares > 0 ? `<span class="text-blue-600 ml-4">FML: ${pos.fml_shares}</span>` : ''}
-                        </div>
-                        <div class="text-right">
-                            <div class="font-bold">${pos.current_value} SOL</div>
-                            <div class="text-sm ${parseFloat(pos.pnl) >= 0 ? 'text-green-600' : 'text-red-600'}">
-                                ${parseFloat(pos.pnl) >= 0 ? '+' : ''}${pos.pnl} SOL
+            try {
+                const response = await fetch(`${API_BASE}/positions/${WALLET}`);
+                const positions = await response.json();
+                
+                if (positions.length === 0) {
+                    document.getElementById('positions-list').innerHTML = 
+                        '<div class="text-center py-12"><p class="text-gray-600 text-lg">No positions yet. Start trading!</p></div>';
+                    return;
+                }
+                
+                const html = positions.map(pos => `
+                    <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 mb-4">
+                        <p class="text-gray-800 mb-3">${pos.market.content}</p>
+                        <div class="flex justify-between items-center">
+                            <div class="text-sm space-y-1">
+                                ${pos.deserved_shares > 0 ? `<div><span class="font-bold text-red-600">😈 Deserved:</span> ${pos.deserved_shares} shares</div>` : ''}
+                                ${pos.fml_shares > 0 ? `<div><span class="font-bold text-blue-600">🍀 FML:</span> ${pos.fml_shares} shares</div>` : ''}
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-black">${pos.current_value} SOL</div>
+                                <div class="text-sm font-bold ${parseFloat(pos.pnl) >= 0 ? 'text-green-600' : 'text-red-600'}">
+                                    ${parseFloat(pos.pnl) >= 0 ? '+' : ''}${pos.pnl} SOL
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
-            
-            document.getElementById('positions-list').innerHTML = html;
+                `).join('');
+                
+                document.getElementById('positions-list').innerHTML = html;
+            } catch (error) {
+                console.error('Failed to load portfolio:', error);
+            }
         }
 
-        // Load markets on start
-        loadMarkets();
+        // Initialize on load
+        showView('create');
     </script>
 </body>
 </html>
