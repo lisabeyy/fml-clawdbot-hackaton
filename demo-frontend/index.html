@@ -6,7 +6,7 @@
     <title>FML or Deserved? 🎯</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
         
         :root {
             /* Core Dark Theme */
@@ -37,12 +37,20 @@
         }
         
         body { 
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'DM Sans', system-ui, sans-serif;
             background: hsl(var(--background));
             color: hsl(var(--foreground));
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+        }
+        
+        h1, h2, h3, h4, h5, h6, .heading-font {
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+        }
+        
+        button {
+            font-family: 'Space Grotesk', system-ui, sans-serif;
         }
         
         /* Grid background */
@@ -68,31 +76,55 @@
         
         /* Cards */
         .cyber-card {
-            background: hsl(var(--card));
+            background: hsl(var(--card) / 0.6);
+            backdrop-filter: blur(12px);
             border: 1px solid hsl(var(--border));
-            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .cyber-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px hsl(var(--fml-primary) / 0.2);
-            border-color: hsl(var(--fml-primary) / 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px hsl(var(--fml-primary) / 0.15), 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-color: hsl(var(--fml-primary) / 0.4);
         }
         
         /* Buttons */
         .btn-primary {
             background: linear-gradient(135deg, hsl(var(--fml-primary)), hsl(var(--fml-secondary)));
-            color: hsl(var(--background));
+            color: #000;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
+            letter-spacing: 0.8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
+            box-shadow: 0 2px 8px hsl(var(--fml-primary) / 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover:not(:disabled)::before {
+            left: 100%;
         }
         
         .btn-primary:hover:not(:disabled) {
-            box-shadow: var(--glow-primary);
-            transform: translateY(-1px);
+            box-shadow: 0 4px 20px hsl(var(--fml-primary) / 0.5), 0 2px 8px rgba(0,0,0,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
         }
         
         .btn-primary:disabled {
@@ -101,17 +133,20 @@
         }
         
         .btn-outline {
-            background: transparent;
+            background: hsl(var(--card) / 0.4);
+            backdrop-filter: blur(8px);
             color: hsl(var(--fml-primary));
-            border: 2px solid hsl(var(--fml-primary));
+            border: 2px solid hsl(var(--fml-primary) / 0.5);
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
+            letter-spacing: 0.8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .btn-outline:hover {
-            background: hsl(var(--fml-primary) / 0.1);
+            background: hsl(var(--fml-primary) / 0.15);
+            border-color: hsl(var(--fml-primary));
+            box-shadow: 0 0 20px hsl(var(--fml-primary) / 0.3);
         }
         
         .btn-deserved {
@@ -150,43 +185,58 @@
         
         /* Input */
         .input-cyber {
-            background: hsl(var(--card));
-            border: 1px solid hsl(var(--border));
+            background: hsl(var(--card) / 0.6);
+            backdrop-filter: blur(8px);
+            border: 1.5px solid hsl(var(--border));
             color: hsl(var(--foreground));
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .input-cyber:focus {
             outline: none;
             border-color: hsl(var(--fml-primary));
-            box-shadow: 0 0 10px hsl(var(--fml-primary) / 0.2);
+            box-shadow: 0 0 0 3px hsl(var(--fml-primary) / 0.1), 0 0 20px hsl(var(--fml-primary) / 0.15);
+            background: hsl(var(--card) / 0.8);
+        }
+        
+        .input-cyber::placeholder {
+            color: hsl(var(--muted-foreground) / 0.5);
         }
         
         /* Price bars */
         .price-bar-deserved {
             background: linear-gradient(90deg, #ff3366, #ff6699);
+            box-shadow: 0 0 12px rgba(255, 51, 102, 0.4);
         }
         
         .price-bar-fml {
             background: linear-gradient(90deg, #0099ff, #00ccff);
+            box-shadow: 0 0 12px rgba(0, 204, 255, 0.4);
         }
         
         /* Glow text */
         .glow-text {
             color: hsl(var(--fml-primary));
-            text-shadow: 0 0 10px hsl(var(--fml-primary) / 0.3);
+            text-shadow: 0 0 20px hsl(var(--fml-primary) / 0.25);
+            transition: text-shadow 0.3s ease;
+        }
+        
+        .glow-text:hover {
+            text-shadow: 0 0 30px hsl(var(--fml-primary) / 0.4);
         }
         
         /* Badge */
         .badge-green {
-            background: hsl(var(--fml-primary) / 0.2);
+            background: hsl(var(--fml-primary) / 0.15);
+            backdrop-filter: blur(8px);
             color: hsl(var(--fml-primary));
-            border: 1px solid hsl(var(--fml-primary) / 0.5);
+            border: 1.5px solid hsl(var(--fml-primary) / 0.4);
             padding: 0.25rem 0.75rem;
             border-radius: 9999px;
             font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         /* Custom cursor */
@@ -248,25 +298,41 @@
             
             .btn-primary, .btn-outline {
                 padding: 14px 20px;
-                font-size: 14px;
+                font-size: 13px;
+                letter-spacing: 0.5px;
             }
+            
+            body {
+                font-size: 15px;
+                line-height: 1.6;
+            }
+        }
+        
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Better link hover */
+        a {
+            transition: all 0.3s ease;
         }
     </style>
 </head>
 <body>
     <!-- Header -->
-    <header class="border-b sticky top-0 z-50" style="border-color: hsl(var(--border)); background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(12px);">
+    <header class="border-b sticky top-0 z-50" style="border-color: hsl(var(--border) / 0.3); background: hsl(var(--background) / 0.8); backdrop-filter: blur(16px) saturate(180%); box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
         <div class="container mx-auto px-4 py-3 sm:py-4 max-w-6xl">
             <div class="flex items-center justify-between gap-4">
                 <div class="flex items-center space-x-2 sm:space-x-3">
                     <span class="text-2xl sm:text-3xl">🎯</span>
                     <div>
-                        <h1 class="text-lg sm:text-xl md:text-2xl font-bold glow-text">FML OR DESERVED?</h1>
-                        <p class="text-xs hidden sm:block" style="color: hsl(var(--muted-foreground));">Turn Pain Into Profit</p>
+                        <h1 class="text-lg sm:text-xl md:text-2xl font-bold glow-text" style="letter-spacing: 0.5px;">FML OR DESERVED?</h1>
+                        <p class="text-xs hidden sm:block" style="color: hsl(var(--muted-foreground)); font-weight: 500;">Turn Pain Into Profit</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="scrollToCreate()" class="btn-primary px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm">
+                    <button onclick="scrollToCreate()" class="btn-primary px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-sm font-semibold">
                         + Story
                     </button>
                 </div>
@@ -277,8 +343,8 @@
     <!-- Hero -->
     <section class="container mx-auto px-4 py-8 sm:py-12 md:py-16 max-w-4xl">
         <div class="text-center">
-            <h2 id="hero-title" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 glow-text leading-tight"></h2>
-            <p class="text-base sm:text-lg md:text-xl mb-8 sm:mb-10" style="color: hsl(var(--muted-foreground));">
+            <h2 id="hero-title" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 glow-text leading-tight" style="letter-spacing: -0.02em;"></h2>
+            <p class="text-base sm:text-lg md:text-xl mb-8 sm:mb-10 font-medium" style="color: hsl(var(--muted-foreground));">
                 This isn't social media. It's a prediction market for pain.
             </p>
             
@@ -305,7 +371,7 @@
     <!-- Markets Feed -->
     <section id="markets-view" class="container mx-auto px-4 py-6 sm:py-8 max-w-6xl">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h2 class="text-2xl sm:text-3xl font-bold glow-text">🔥 ACTIVE MARKETS</h2>
+            <h2 class="text-2xl sm:text-3xl font-bold glow-text" style="letter-spacing: -0.01em;">🔥 ACTIVE MARKETS</h2>
             <div class="flex gap-2">
                 <button onclick="filterMarkets('active')" id="filter-active" class="btn-outline px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm">
                     ACTIVE
@@ -321,11 +387,11 @@
     <!-- Story Creation -->
     <section id="create-section" class="container mx-auto px-4 py-8 sm:py-12 max-w-4xl">
         <div class="cyber-card rounded-2xl p-4 sm:p-6 md:p-8">
-            <h3 class="text-2xl sm:text-3xl font-bold mb-6 text-center glow-text">SHARE YOUR STORY</h3>
+            <h3 class="text-2xl sm:text-3xl font-bold mb-6 text-center glow-text" style="letter-spacing: -0.01em;">SHARE YOUR STORY</h3>
             
             <div class="space-y-4 sm:space-y-6">
                 <div>
-                    <label class="block text-sm font-semibold mb-2 glow-text">Your Story</label>
+                    <label class="block text-sm font-semibold mb-2 glow-text heading-font" style="letter-spacing: 0.3px;">Your Story</label>
                     <textarea id="story-input" 
                         class="input-cyber w-full text-base sm:text-lg rounded-xl resize-none p-3 sm:p-4"
                         rows="4" 
@@ -343,7 +409,7 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold mb-2 glow-text">Initial Liquidity (SOL)</label>
+                        <label class="block text-sm font-semibold mb-2 glow-text heading-font" style="letter-spacing: 0.3px;">Initial Liquidity (SOL)</label>
                         <input type="number" id="liquidity-input" value="0.1" step="0.1" min="0.1" 
                             class="input-cyber w-full rounded-xl p-3">
                         <p class="text-xs mt-1" style="color: hsl(var(--muted-foreground));">You earn 2% of all trading!</p>
@@ -403,7 +469,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-sm font-semibold mb-2 glow-text">Amount (SOL)</label>
+                    <label class="block text-sm font-semibold mb-2 glow-text heading-font" style="letter-spacing: 0.3px;">Amount (SOL)</label>
                     <div class="flex gap-2">
                         <input type="number" id="trade-amount" value="0.01" step="0.01" min="0.001"
                             class="input-cyber flex-1 rounded-xl p-3 text-sm sm:text-base">
