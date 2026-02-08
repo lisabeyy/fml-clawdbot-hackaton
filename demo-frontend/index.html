@@ -277,12 +277,17 @@
                     <span class="text-4xl">🎯</span>
                     <div>
                         <h1 class="text-3xl font-bold glow-text" style="letter-spacing: 2px;">FML OR DESERVED?</h1>
-                        <p class="text-xs" style="color: hsl(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 1px;">Community Prediction Market</p>
+                        <p class="text-xs" style="color: hsl(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 1px;">Turn Pain Into Profit</p>
                     </div>
                 </div>
-                <button onclick="scrollToCreate()" class="btn-primary px-6 py-3 rounded-lg">
-                    + New Story
-                </button>
+                <div class="flex items-center space-x-3">
+                    <button onclick="scrollToCreate()" class="btn-primary px-6 py-3 rounded-lg">
+                        + New Story
+                    </button>
+                    <button onclick="alert('Wallet integration coming to devnet deployment!')" class="btn-outline px-6 py-3 rounded-lg">
+                        Connect Wallet
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -290,8 +295,25 @@
     <!-- Hero Section -->
     <div class="container mx-auto px-4 py-16 max-w-4xl">
         <div class="text-center mb-12">
-            <h2 class="text-5xl font-bold mb-4 glow-text" style="letter-spacing: 2px;">WHAT HAPPENED TO YOU?</h2>
-            <p class="text-xl" style="color: hsl(var(--muted-foreground));">Share your disaster. Let the community decide: FML or Deserved?</p>
+            <h2 class="text-5xl font-bold mb-4 glow-text" style="letter-spacing: 2px;">EVERY STORY BECOMES A MARKET</h2>
+            <p class="text-xl mb-6" style="color: hsl(var(--muted-foreground));">This isn't just social media. It's a prediction market for pain.</p>
+            
+            <div class="max-w-2xl mx-auto space-y-4 text-left" style="color: hsl(var(--foreground)); font-size: 1.1rem;">
+                <p>When you post a story, it doesn't just get likes — it becomes a <span class="glow-text font-bold">live prediction market</span>.</p>
+                
+                <p>The community votes if it was <span style="color: #ff3366; font-weight: 600;">Deserved</span> or <span style="color: #00ccff; font-weight: 600;">Pure FML</span>.</p>
+                
+                <ul class="space-y-2 mt-4" style="list-style: none; padding-left: 0;">
+                    <li>• Each vote adds to the prediction pool</li>
+                    <li>• When voting ends, winners split the rewards</li>
+                    <li>• <span class="glow-text font-bold">You earn 2% of all trading volume</span> on your story</li>
+                    <li>• Come early, bag more — prices rise with each trade</li>
+                </ul>
+                
+                <p class="text-center mt-6 text-2xl font-bold glow-text" style="letter-spacing: 1px;">
+                    YOUR PAIN BECOMES LIQUIDITY.
+                </p>
+            </div>
         </div>
     </div>
 
@@ -365,12 +387,13 @@
                     <div class="flex items-start space-x-3">
                         <span class="text-2xl">💡</span>
                         <div class="text-sm" style="color: hsl(var(--muted-foreground));">
-                            <p class="font-bold mb-1 glow-text" style="text-transform: uppercase;">How It Works:</p>
+                            <p class="font-bold mb-1 glow-text" style="text-transform: uppercase;">Market Mechanics:</p>
                             <ul class="space-y-1 list-disc list-inside">
-                                <li>Share your story (80-280 characters)</li>
-                                <li>Others bet: <span class="font-bold" style="color: #ff3366;">DESERVED</span> or <span class="font-bold" style="color: #00ccff;">FML</span></li>
-                                <li>After 10 votes or 48 hours, market resolves</li>
-                                <li>Winners split the pot. You earn from trading volume!</li>
+                                <li><span class="font-bold">Bonding Curve:</span> Each story has its own market. Prices rise with demand.</li>
+                                <li><span class="font-bold">Early Edge:</span> First traders get the best prices. Late traders pay premium.</li>
+                                <li><span class="font-bold">Creator Fees:</span> You earn <span class="glow-text">2% of ALL trading</span> on your story.</li>
+                                <li><span class="font-bold">Resolution:</span> After 10 votes or 48 hours, winning side splits the pot.</li>
+                                <li><span class="font-bold">Your Upside:</span> Controversial stories = more trading = more fees for you.</li>
                             </ul>
                         </div>
                     </div>
@@ -395,7 +418,10 @@
 
             <!-- Trading Interface -->
             <div class="cyber-card rounded-xl p-6">
-                <h4 class="font-bold text-2xl mb-4 text-center glow-text" style="text-transform: uppercase; letter-spacing: 2px;">⚖️ Cast Judgment</h4>
+                <h4 class="font-bold text-2xl mb-2 text-center glow-text" style="text-transform: uppercase; letter-spacing: 2px;">⚖️ Cast Judgment</h4>
+                <p class="text-center text-sm mb-4" style="color: hsl(var(--muted-foreground));">
+                    ⚡ Early traders get better prices • Creator earns 2% of your trade
+                </p>
                 
                 <div class="grid grid-cols-2 gap-4 mb-6">
                     <button onclick="selectSide('deserved')" id="btn-deserved"
