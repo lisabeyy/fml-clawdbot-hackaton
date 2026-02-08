@@ -25,13 +25,18 @@ const store = new DataStore();
 const solana = new SolanaDevnet();
 const db = new Database();
 
-// Initialize database
-if (USE_DATABASE) {
+// Initialize database (skip on Vercel - use in-memory only)
+const IS_VERCEL = process.env.VERCEL === '1';
+if (USE_DATABASE && !IS_VERCEL) {
   await db.initialize();
+  console.log('✅ Database initialized');
 } else {
-  // Seed with example markets (only in simulation mode without database)
+  // Use in-memory storage on Vercel or when database disabled
   if (!DEVNET_ENABLED) {
     store.seedExamples();
+  }
+  if (IS_VERCEL) {
+    console.log('📦 Running on Vercel - using in-memory storage');
   }
 }
 
@@ -140,8 +145,8 @@ app.post('/api/upload', upload.single('media'), async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    if (!USE_DATABASE) {
-      return res.status(501).json({ error: 'Media uploads require database mode' });
+    if (!USE_DATABASE || IS_VERCEL) {
+      return res.status(501).json({ error: 'Media uploads not available on Vercel deployment (use localhost or dedicated server)' });
     }
 
     const id = `media_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -193,15 +198,15 @@ app.post('/api/markets', async (req, res) => {
     );
 
     // Attach media if provided
-    if (media_id && USE_DATABASE) {
+    if (media_id && USE_DATABASE && !IS_VERCEL) {
       const media = await db.getMedia(media_id);
       if (media) {
         market.media = media.path;
       }
     }
 
-    // Save to database if enabled
-    if (USE_DATABASE) {
+    // Save to database if enabled (skip on Vercel)
+    if (USE_DATABASE && !IS_VERCEL) {
       await db.createMarket(market);
     }
 
