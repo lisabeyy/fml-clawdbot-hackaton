@@ -1,3 +1,13 @@
 {
-  "version": 2
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/demo-frontend/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/demo-frontend/$1"
+    }
+  ]
 }
