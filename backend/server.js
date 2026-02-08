@@ -144,42 +144,45 @@ app.get('/api/markets/:id', (req, res) => {
   }
 });
 
-// POST /api/upload - Upload media
-app.post('/api/upload', upload.single('media'), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
+// POST /api/upload - Upload media (disabled on Vercel)
+if (!IS_VERCEL) {
+  app.post('/api/upload', upload.single('media'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+
+      const id = `media_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const ext = path.extname(req.file.originalname);
+      const filename = `${id}${ext}`;
+
+      const media = await db.saveMedia(
+        id,
+        filename,
+        req.file.buffer,
+        req.file.mimetype
+      );
+
+      console.log(`📎 Media uploaded: ${filename} (${(req.file.size / 1024).toFixed(2)} KB)`);
+
+      res.json({
+        success: true,
+        media_id: media.id,
+        url: media.path,
+        filename: media.filename,
+        size: req.file.size,
+      });
+    } catch (error) {
+      console.error('Error uploading media:', error);
+      res.status(500).json({ error: error.message });
     }
-
-    if (!USE_DATABASE || IS_VERCEL) {
-      return res.status(501).json({ error: 'Media uploads not available on Vercel deployment (use localhost or dedicated server)' });
-    }
-
-    const id = `media_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const ext = path.extname(req.file.originalname);
-    const filename = `${id}${ext}`;
-
-    const media = await db.saveMedia(
-      id,
-      filename,
-      req.file.buffer,
-      req.file.mimetype
-    );
-
-    console.log(`📎 Media uploaded: ${filename} (${(req.file.size / 1024).toFixed(2)} KB)`);
-
-    res.json({
-      success: true,
-      media_id: media.id,
-      url: media.path,
-      filename: media.filename,
-      size: req.file.size,
-    });
-  } catch (error) {
-    console.error('Error uploading media:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
+  });
+} else {
+  // Vercel: just return not supported
+  app.post('/api/upload', (req, res) => {
+    res.status(501).json({ error: 'Media uploads not available on Vercel (use local deployment)' });
+  });
+}
 
 // POST /api/markets - Create new market
 app.post('/api/markets', async (req, res) => {
