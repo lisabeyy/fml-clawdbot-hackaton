@@ -1,50 +1,57 @@
 /**
- * Constant-Sum AMM Simulator
+ * Constant-Sum AMM Simulator (FIXED)
  * Implements the same logic as the Anchor smart contract
  */
 
 export class AMMSimulator {
   constructor() {
     this.CREATOR_FEE_BPS = 200; // 2%
-    this.PLATFORM_FEE_BPS = 50;  // 0.5%
+    this.PLATFORM_FEE_BPS = 0;  // 0% (all fees go to creator for now)
     this.MIN_TRADE = 0.001;
   }
 
   /**
    * Calculate current price for a side
-   * Price of Deserved = FML Reserve / K
-   * Price of FML = Deserved Reserve / K
+   * Price = (reserve of that side) / K
    */
   calculatePrice(market, side) {
     const k = market.deservedReserve + market.fmlReserve;
     if (side === 'deserved') {
-      return market.fmlReserve / k;
-    } else {
       return market.deservedReserve / k;
+    } else {
+      return market.fmlReserve / k;
     }
   }
 
   /**
-   * Calculate percentages for display
+   * Calculate percentages for display (represents current betting odds)
    */
   calculatePercentages(market) {
     const k = market.deservedReserve + market.fmlReserve;
     return {
-      deserved: Math.round((market.fmlReserve / k) * 100),
-      fml: Math.round((market.deservedReserve / k) * 100),
+      deserved: Math.round((market.deservedReserve / k) * 100),
+      fml: Math.round((market.fmlReserve / k) * 100),
     };
   }
 
   /**
-   * Execute a trade
-   * Returns: { shares, newReserves }
+   * Execute a trade (buy shares)
+   * 
+   * Constant-sum invariant: deservedReserve + fmlReserve = K
+   * 
+   * When buying "deserved" shares:
+   * 1. Add SOL to deserved pool
+   * 2. FML pool decreases (to keep K constant)
+   * 3. Shares received = amount FML decreased
+   * 
+   * Returns: { shares, creatorFee, netAmount }
    */
   buyShares(market, side, amount) {
     if (amount < this.MIN_TRADE) {
       throw new Error(`Minimum trade is ${this.MIN_TRADE} SOL`);
     }
 
-    // Calculate fees
+    // Calculate fees (2% to creator)
     const creatorFee = (amount * this.CREATOR_FEE_BPS) / 10000;
     const platformFee = (amount * this.PLATFORM_FEE_BPS) / 10000;
     const netAmount = amount - creatorFee - platformFee;
@@ -54,16 +61,23 @@ export class AMMSimulator {
     const oldFmlReserve = market.fmlReserve;
     const k = oldDeservedReserve + oldFmlReserve;
 
-    // Update reserves (constant-sum: deserved + fml = k)
+    // Update reserves based on constant-sum formula
     let shares;
+    
     if (side === 'deserved') {
-      market.fmlReserve += netAmount;
-      market.deservedReserve = k - market.fmlReserve;
-      shares = netAmount; // Simplified: shares ≈ amount spent
-    } else {
+      // Buying deserved: add to deserved pool
       market.deservedReserve += netAmount;
+      // FML adjusts to keep K constant
       market.fmlReserve = k - market.deservedReserve;
-      shares = netAmount;
+      // Shares = how much FML decreased
+      shares = oldFmlReserve - market.fmlReserve;
+    } else {
+      // Buying FML: add to FML pool
+      market.fmlReserve += netAmount;
+      // Deserved adjusts to keep K constant
+      market.deservedReserve = k - market.fmlReserve;
+      // Shares = how much deserved decreased
+      shares = oldDeservedReserve - market.deservedReserve;
     }
 
     // Update market stats
@@ -109,7 +123,7 @@ export class AMMSimulator {
   }
 
   /**
-   * Calculate payout for a position
+   * Calculate payout for a position (after market resolves)
    */
   calculatePayout(market, position) {
     if (!market.resolved) {
