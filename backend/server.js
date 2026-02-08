@@ -18,6 +18,7 @@ const PORT = process.env.PORT || 3000;
 // Check if devnet mode is enabled
 const DEVNET_ENABLED = process.env.SOLANA_DEVNET === 'true';
 const USE_DATABASE = process.env.USE_DATABASE !== 'false'; // Default to true
+const IS_VERCEL = process.env.VERCEL === '1';
 
 // Initialize
 const amm = new AMMSimulator();
@@ -26,18 +27,23 @@ const solana = new SolanaDevnet();
 const db = new Database();
 
 // Initialize database (skip on Vercel - use in-memory only)
-const IS_VERCEL = process.env.VERCEL === '1';
+let dbReady = false;
 if (USE_DATABASE && !IS_VERCEL) {
-  await db.initialize();
-  console.log('✅ Database initialized');
-} else {
-  // Use in-memory storage on Vercel or when database disabled
-  if (!DEVNET_ENABLED) {
-    store.seedExamples();
-  }
-  if (IS_VERCEL) {
-    console.log('📦 Running on Vercel - using in-memory storage');
-  }
+  db.initialize().then(() => {
+    dbReady = true;
+    console.log('✅ Database initialized');
+  }).catch(err => {
+    console.error('Database initialization failed:', err);
+  });
+}
+
+// Use in-memory storage (seed examples)
+if (!DEVNET_ENABLED) {
+  store.seedExamples();
+}
+
+if (IS_VERCEL) {
+  console.log('📦 Running on Vercel - using in-memory storage');
 }
 
 // Middleware
