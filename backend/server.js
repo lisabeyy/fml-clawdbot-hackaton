@@ -3,16 +3,23 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { AMMSimulator } from './amm.js';
 import { DataStore } from './store.js';
+import { SolanaDevnet } from './solana-devnet.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Check if devnet mode is enabled
+const DEVNET_ENABLED = process.env.SOLANA_DEVNET === 'true';
+
 // Initialize
 const amm = new AMMSimulator();
 const store = new DataStore();
+const solana = new SolanaDevnet();
 
-// Seed with example markets
-store.seedExamples();
+// Seed with example markets (only in simulation mode)
+if (!DEVNET_ENABLED) {
+  store.seedExamples();
+}
 
 // Middleware
 app.use(cors());
@@ -69,7 +76,8 @@ function getTimeRemaining(createdAt) {
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'ok', 
-    mode: 'simulation',
+    mode: DEVNET_ENABLED ? 'devnet' : 'simulation',
+    devnet_enabled: DEVNET_ENABLED,
     markets: store.markets.size,
     uptime: process.uptime(),
   });
@@ -268,8 +276,14 @@ app.use((err, req, res, next) => {
 if (process.env.VERCEL !== '1') {
   app.listen(PORT, () => {
     console.log(`🚀 FML or Deserved API running on http://localhost:${PORT}`);
-    console.log(`📊 Mode: Simulation (in-memory)`);
-    console.log(`📝 Seeded with ${store.markets.size} example markets`);
+    console.log(`📊 Mode: ${DEVNET_ENABLED ? 'Solana Devnet' : 'Simulation (in-memory)'}`);
+    if (!DEVNET_ENABLED) {
+      console.log(`📝 Seeded with ${store.markets.size} example markets`);
+      console.log(`💡 To enable devnet: Set SOLANA_DEVNET=true in .env`);
+    } else {
+      console.log(`🌐 Connected to Solana devnet`);
+      console.log(`📝 Program ID: ${solana.programId || 'Not deployed yet'}`);
+    }
     console.log(`\nAPI Endpoints:`);
     console.log(`  GET  /api/health`);
     console.log(`  GET  /api/markets`);
