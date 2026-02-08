@@ -1,41 +1,21 @@
 import express from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { AMMSimulator } from './amm.js';
 import { DataStore } from './store.js';
 import { SolanaDevnet } from './solana-devnet.js';
-import { Database } from './database.js';
-import { upload } from './multer-config.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Check if devnet mode is enabled
 const DEVNET_ENABLED = process.env.SOLANA_DEVNET === 'true';
-const USE_DATABASE = process.env.USE_DATABASE !== 'false'; // Default to true
 const IS_VERCEL = process.env.VERCEL === '1';
 
 // Initialize
 const amm = new AMMSimulator();
 const store = new DataStore();
 const solana = new SolanaDevnet();
-const db = new Database();
-
-// Initialize database (skip on Vercel - use in-memory only)
-let dbReady = false;
-if (USE_DATABASE && !IS_VERCEL) {
-  db.initialize().then(() => {
-    dbReady = true;
-    console.log('✅ Database initialized');
-  }).catch(err => {
-    console.error('Database initialization failed:', err);
-  });
-}
 
 // Use in-memory storage (seed examples)
 if (!DEVNET_ENABLED) {
@@ -49,9 +29,6 @@ if (IS_VERCEL) {
 // Middleware
 app.use(cors());
 app.use(express.json());
-
-// Serve media files
-app.use('/media', express.static(path.join(__dirname, 'data', 'media')));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -144,50 +121,10 @@ app.get('/api/markets/:id', (req, res) => {
   }
 });
 
-// POST /api/upload - Upload media (disabled on Vercel)
-if (!IS_VERCEL) {
-  app.post('/api/upload', upload.single('media'), async (req, res) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ error: 'No file uploaded' });
-      }
-
-      const id = `media_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const ext = path.extname(req.file.originalname);
-      const filename = `${id}${ext}`;
-
-      const media = await db.saveMedia(
-        id,
-        filename,
-        req.file.buffer,
-        req.file.mimetype
-      );
-
-      console.log(`📎 Media uploaded: ${filename} (${(req.file.size / 1024).toFixed(2)} KB)`);
-
-      res.json({
-        success: true,
-        media_id: media.id,
-        url: media.path,
-        filename: media.filename,
-        size: req.file.size,
-      });
-    } catch (error) {
-      console.error('Error uploading media:', error);
-      res.status(500).json({ error: error.message });
-    }
-  });
-} else {
-  // Vercel: just return not supported
-  app.post('/api/upload', (req, res) => {
-    res.status(501).json({ error: 'Media uploads not available on Vercel (use local deployment)' });
-  });
-}
-
 // POST /api/markets - Create new market
 app.post('/api/markets', async (req, res) => {
   try {
-    const { content, initial_liquidity, wallet, media_id } = req.body;
+    const { content, initial_liquidity, wallet } = req.body;
 
     // Validation
     if (!content || content.length < 10) {
@@ -206,20 +143,7 @@ app.post('/api/markets', async (req, res) => {
       wallet || 'anonymous'
     );
 
-    // Attach media if provided
-    if (media_id && USE_DATABASE && !IS_VERCEL) {
-      const media = await db.getMedia(media_id);
-      if (media) {
-        market.media = media.path;
-      }
-    }
-
-    // Save to database if enabled (skip on Vercel)
-    if (USE_DATABASE && !IS_VERCEL) {
-      await db.createMarket(market);
-    }
-
-    console.log(`✅ Market created: ${market.id} - "${content.substring(0, 50)}..."${media_id ? ' [with media]' : ''}`);
+    console.log(`✅ Market created: ${market.id} - "${content.substring(0, 50)}..."`);
 
     res.status(201).json(formatMarket(market));
   } catch (error) {
