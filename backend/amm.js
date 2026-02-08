@@ -95,13 +95,34 @@ export class AMMSimulator {
 
   /**
    * Check if market should resolve
+   * 
+   * Resolution conditions:
+   * 1. Minimum 48 hours must pass (prevents instant manipulation)
+   * 2. Then either:
+   *    a) 20 SOL trading volume reached (high engagement), OR
+   *    b) 7 days elapsed (auto-resolve low-volume markets)
    */
   shouldResolve(market) {
     const now = Date.now();
     const elapsed = now - market.createdAt;
-    const TIME_LIMIT = 48 * 3600 * 1000; // 48 hours
-
-    return market.voteCount >= 10 || elapsed >= TIME_LIMIT;
+    
+    // Constants
+    const MIN_TIME = 48 * 3600 * 1000;     // 48 hours
+    const MAX_TIME = 7 * 24 * 3600 * 1000; // 7 days  
+    const MIN_VOLUME = 20;                  // 20 SOL
+    
+    // Must wait at least 48 hours
+    if (elapsed < MIN_TIME) {
+      return false;
+    }
+    
+    // Auto-resolve after 7 days
+    if (elapsed >= MAX_TIME) {
+      return true;
+    }
+    
+    // Can resolve if hit volume threshold (after 48h)
+    return market.totalVolume >= MIN_VOLUME;
   }
 
   /**

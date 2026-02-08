@@ -93,21 +93,37 @@ console.log(`10.0 SOL trade: D=${large.deserved}%`);
 console.assert(large.deserved > small.deserved, 'Larger trade should have bigger impact');
 console.log('✅ Pass\n');
 
-// Test 6: Resolution
-console.log('Test 6: Market Resolution');
+// Test 6: Resolution (Volume-Based)
+console.log('Test 6: Market Resolution (Volume-Based)');
 const market6 = createTestMarket();
+market6.createdAt = Date.now() - (49 * 3600 * 1000); // 49 hours ago (past 48h minimum)
 
-// Simulate 10 votes (resolution threshold)
-for (let i = 0; i < 10; i++) {
-  amm.buyShares(market6, 'deserved', 0.1);
+// Add trades to reach 20 SOL volume
+for (let i = 0; i < 20; i++) {
+  amm.buyShares(market6, 'deserved', 1.0);
 }
 
-console.log(`Vote count: ${market6.voteCount}`);
-console.assert(amm.shouldResolve(market6), 'Should resolve after 10 votes');
+console.log(`Volume: ${market6.totalVolume} SOL`);
+console.log(`Age: 49 hours`);
+console.assert(amm.shouldResolve(market6), 'Should resolve after 48h + 20 SOL volume');
 
 const finalPercentages = amm.resolveMarket(market6);
 console.log(`Final result: D=${finalPercentages.deserved}%, F=${finalPercentages.fml}%`);
 console.assert(market6.resolved, 'Market should be resolved');
+console.log('✅ Pass\n');
+
+// Test 6b: Can't resolve before 48h even with volume
+console.log('Test 6b: Can\'t Resolve Before 48h');
+const market6b = createTestMarket();
+market6b.createdAt = Date.now() - (10 * 3600 * 1000); // Only 10 hours old
+
+for (let i = 0; i < 50; i++) {
+  amm.buyShares(market6b, 'deserved', 1.0); // Way over 20 SOL
+}
+
+console.log(`Volume: ${market6b.totalVolume} SOL (way over threshold)`);
+console.log(`Age: 10 hours (under 48h)`);
+console.assert(!amm.shouldResolve(market6b), 'Should NOT resolve before 48 hours, even with volume');
 console.log('✅ Pass\n');
 
 // Test 7: Creator earnings accumulate
@@ -146,5 +162,6 @@ console.log('\n📊 Summary:');
 console.log('- Prices start at 50-50');
 console.log('- Buying increases price (bonding curve works)');
 console.log('- Creator earns 2% of all volume');
-console.log('- Market resolves after 10 votes');
+console.log('- Market resolves: 48h min + (20 SOL volume OR 7 days)');
+console.log('- Can\'t be manipulated before 48 hours');
 console.log('- Constant-sum invariant holds');
