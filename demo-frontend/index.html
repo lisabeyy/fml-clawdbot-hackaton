@@ -332,8 +332,8 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="scrollToCreate()" class="btn-primary px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-sm font-semibold">
-                        + Story
+                    <button onclick="scrollToCreate()" class="btn-primary px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-sm font-semibold cursor-target">
+                        + New Story
                     </button>
                 </div>
             </div>
@@ -343,7 +343,7 @@
     <!-- Hero -->
     <section class="container mx-auto px-4 py-8 sm:py-12 md:py-16 max-w-4xl">
         <div class="text-center">
-            <h2 id="hero-title" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 glow-text leading-tight" style="letter-spacing: -0.02em;"></h2>
+            <h2 id="hero-title" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 glow-text leading-tight cursor-target" style="letter-spacing: -0.02em;"></h2>
             <p class="text-base sm:text-lg md:text-xl mb-8 sm:mb-10 font-medium" style="color: hsl(var(--muted-foreground));">
                 This isn't social media. It's a prediction market for pain.
             </p>
@@ -373,10 +373,10 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <h2 class="text-2xl sm:text-3xl font-bold glow-text" style="letter-spacing: -0.01em;">🔥 ACTIVE MARKETS</h2>
             <div class="flex gap-2">
-                <button onclick="filterMarkets('active')" id="filter-active" class="btn-outline px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm">
+                <button onclick="filterMarkets('active')" id="filter-active" class="btn-outline px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm cursor-target">
                     ACTIVE
                 </button>
-                <button onclick="filterMarkets('resolved')" id="filter-resolved" class="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm" style="background: hsl(var(--card)); color: hsl(var(--muted-foreground)); border: 1px solid hsl(var(--border));">
+                <button onclick="filterMarkets('resolved')" id="filter-resolved" class="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm cursor-target" style="background: hsl(var(--card)); color: hsl(var(--muted-foreground)); border: 1px solid hsl(var(--border));">
                     RESOLVED
                 </button>
             </div>
@@ -416,8 +416,8 @@
                     </div>
                     <div class="flex items-end">
                         <button onclick="createMarket()" id="submit-btn"
-                            class="w-full btn-primary py-3 sm:py-4 rounded-xl text-base font-semibold">
-                            🚀 Create Market
+                            class="w-full btn-primary py-3 sm:py-4 rounded-xl text-base font-semibold cursor-target">
+                            Create Market
                         </button>
                     </div>
                 </div>
@@ -459,11 +459,11 @@
                 
                 <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
                     <button onclick="selectSide('deserved')" id="btn-deserved"
-                        class="btn-deserved py-3 sm:py-4 rounded-xl text-sm sm:text-base">
+                        class="btn-deserved py-3 sm:py-4 rounded-xl text-sm sm:text-base cursor-target">
                         😈 DESERVED
                     </button>
                     <button onclick="selectSide('fml')" id="btn-fml"
-                        class="btn-fml py-3 sm:py-4 rounded-xl text-sm sm:text-base">
+                        class="btn-fml py-3 sm:py-4 rounded-xl text-sm sm:text-base cursor-target">
                         🍀 FML
                     </button>
                 </div>
@@ -481,7 +481,7 @@
                 </div>
 
                 <button onclick="executeTrade()" id="trade-btn"
-                    class="w-full btn-primary py-3 sm:py-4 rounded-xl text-base font-semibold">
+                    class="w-full btn-primary py-3 sm:py-4 rounded-xl text-base font-semibold cursor-target">
                     PLACE BET
                 </button>
             </div>
@@ -539,7 +539,7 @@
                 const markets = await response.json();
                 
                 const html = markets.map(market => `
-                    <div class="cyber-card rounded-xl p-4 sm:p-6 cursor-pointer"
+                    <div class="cyber-card rounded-xl p-4 sm:p-6 cursor-pointer cursor-target"
                          onclick="openMarket('${market.id}')">
                         <p class="text-sm sm:text-base md:text-lg mb-4 leading-relaxed">${market.content}</p>
                         ${renderPriceChart(market.deserved_percent, market.fml_percent)}
@@ -629,7 +629,7 @@
         async function executeTrade() {
             const amount = parseFloat(document.getElementById('trade-amount').value);
             
-            alert(`🎮 Demo Mode: In production, this would trade ${amount} SOL for ${selectedSide} shares on devnet!`);
+            alert(`Demo Mode: In production, this would trade ${amount} SOL for ${selectedSide} shares on devnet!`);
             closeModal();
         }
 
@@ -649,7 +649,7 @@
             
             const btn = document.getElementById('submit-btn');
             btn.disabled = true;
-            btn.textContent = '🚀 Creating...';
+            btn.textContent = 'Creating...';
             
             try {
                 const response = await fetch(`${API_BASE}/markets`, {
@@ -663,14 +663,14 @@
                 document.getElementById('story-input').value = '';
                 document.getElementById('char-count').innerHTML = '<span style="color: hsl(var(--fml-primary));">0</span><span style="color: hsl(var(--muted-foreground));">/280</span>';
                 
-                alert(`🎉 Story created! In production, this would be on devnet with real SOL.`);
+                alert(`Story created! In production, this would be on devnet with real SOL.`);
                 loadMarkets();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (error) {
                 alert('❌ Failed: ' + error.message);
             } finally {
                 btn.disabled = false;
-                btn.textContent = '🚀 Create Market';
+                btn.textContent = 'Create Market';
             }
         }
 
@@ -716,26 +716,18 @@
                     this.cursorX = window.innerWidth / 2;
                     this.cursorY = window.innerHeight / 2;
                     this.rotation = 0;
+                    this.isSpinning = true;
+                    this.activeTarget = null;
+                    this.cornerSize = 12;
+                    this.borderWidth = 3;
                     this.init();
                 }
                 
                 init() {
                     document.body.style.cursor = 'none';
                     this.createCursor();
+                    this.setupEventListeners();
                     this.animate();
-                    
-                    window.addEventListener('mousemove', (e) => {
-                        this.mouseX = e.clientX;
-                        this.mouseY = e.clientY;
-                    });
-                    
-                    window.addEventListener('mousedown', () => {
-                        this.dot.style.transform = 'scale(0.7)';
-                    });
-                    
-                    window.addEventListener('mouseup', () => {
-                        this.dot.style.transform = 'scale(1)';
-                    });
                 }
                 
                 createCursor() {
@@ -757,14 +749,101 @@
                     document.body.appendChild(this.cursor);
                 }
                 
+                setupEventListeners() {
+                    window.addEventListener('mousemove', (e) => {
+                        this.mouseX = e.clientX;
+                        this.mouseY = e.clientY;
+                        
+                        // Check if hovering over cursor-target
+                        const element = document.elementFromPoint(e.clientX, e.clientY);
+                        const target = element?.closest('.cursor-target');
+                        
+                        if (target && target !== this.activeTarget) {
+                            this.onEnterTarget(target);
+                        } else if (!target && this.activeTarget) {
+                            this.onLeaveTarget();
+                        }
+                        
+                        // Update corners if over target
+                        if (this.activeTarget) {
+                            this.updateCorners(e.clientX, e.clientY);
+                        }
+                    });
+                    
+                    window.addEventListener('mousedown', () => {
+                        this.dot.style.transform = 'scale(0.7)';
+                    });
+                    
+                    window.addEventListener('mouseup', () => {
+                        this.dot.style.transform = 'scale(1)';
+                    });
+                }
+                
+                onEnterTarget(target) {
+                    this.activeTarget = target;
+                    this.isSpinning = false;
+                    this.rotation = 0;
+                    this.updateCorners(this.mouseX, this.mouseY);
+                }
+                
+                onLeaveTarget() {
+                    this.activeTarget = null;
+                    this.isSpinning = true;
+                    // Reset corners to default position
+                    this.corners.forEach((corner, i) => {
+                        const positions = [
+                            { x: -18, y: -18 }, // TL
+                            { x: 6, y: -18 },   // TR
+                            { x: 6, y: 6 },     // BR
+                            { x: -18, y: 6 }    // BL
+                        ];
+                        corner.style.transform = `translate(${positions[i].x}px, ${positions[i].y}px)`;
+                    });
+                }
+                
+                updateCorners(mouseX, mouseY) {
+                    if (!this.activeTarget) return;
+                    
+                    const rect = this.activeTarget.getBoundingClientRect();
+                    const cursorCenterX = this.cursorX;
+                    const cursorCenterY = this.cursorY;
+                    
+                    // Calculate corner positions relative to cursor
+                    const positions = [
+                        { 
+                            x: rect.left - cursorCenterX - this.borderWidth,
+                            y: rect.top - cursorCenterY - this.borderWidth
+                        }, // TL
+                        { 
+                            x: rect.right - cursorCenterX + this.borderWidth - this.cornerSize,
+                            y: rect.top - cursorCenterY - this.borderWidth
+                        }, // TR
+                        { 
+                            x: rect.right - cursorCenterX + this.borderWidth - this.cornerSize,
+                            y: rect.bottom - cursorCenterY + this.borderWidth - this.cornerSize
+                        }, // BR
+                        { 
+                            x: rect.left - cursorCenterX - this.borderWidth,
+                            y: rect.bottom - cursorCenterY + this.borderWidth - this.cornerSize
+                        }  // BL
+                    ];
+                    
+                    this.corners.forEach((corner, i) => {
+                        corner.style.transform = `translate(${positions[i].x}px, ${positions[i].y}px)`;
+                        corner.style.transition = 'transform 0.2s ease-out';
+                    });
+                }
+                
                 animate() {
                     const dx = this.mouseX - this.cursorX;
                     const dy = this.mouseY - this.cursorY;
                     this.cursorX += dx * 0.15;
                     this.cursorY += dy * 0.15;
                     
-                    this.rotation += 0.5;
-                    if (this.rotation >= 360) this.rotation = 0;
+                    if (this.isSpinning) {
+                        this.rotation += 0.5;
+                        if (this.rotation >= 360) this.rotation = 0;
+                    }
                     
                     this.cursor.style.transform = `translate(${this.cursorX}px, ${this.cursorY}px) rotate(${this.rotation}deg)`;
                     
