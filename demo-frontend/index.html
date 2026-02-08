@@ -6,7 +6,7 @@
     <title>FML or Deserved? 🎯</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         
         :root {
             /* Core Dark Theme */
@@ -15,24 +15,19 @@
             --card: 240 10% 7%;
             --border: 240 6% 15%;
             
-            /* FML Red - For losses and disasters */
+            /* Colors */
             --primary: 0 84% 60%;
-            
-            /* Degen Green - For gains and wins */
             --secondary: 120 100% 50%;
-            
-            /* Muted grays */
             --muted: 240 5% 26%;
             --muted-foreground: 240 5% 65%;
             
-            /* Green Theme Colors */
+            /* Green Theme */
             --fml-primary: 142 100% 50%;
             --fml-secondary: 122 100% 45%;
             --fml-accent: 162 100% 55%;
             
-            /* Neon Glows */
+            /* Glows */
             --glow-primary: 0 0 20px hsl(var(--fml-primary) / 0.5);
-            --glow-secondary: 0 0 20px hsl(var(--fml-secondary) / 0.5);
         }
         
         * {
@@ -42,13 +37,15 @@
         }
         
         body { 
-            font-family: 'Oswald', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             background: hsl(var(--background));
             color: hsl(var(--foreground));
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
-        /* Cyber grid background */
+        /* Grid background */
         body::before {
             content: '';
             position: fixed;
@@ -57,8 +54,8 @@
             width: 100%;
             height: 100%;
             background-image: 
-                linear-gradient(rgba(0, 255, 120, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 120, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(0, 255, 120, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 120, 0.02) 1px, transparent 1px);
             background-size: 50px 50px;
             pointer-events: none;
             z-index: 0;
@@ -69,7 +66,7 @@
             z-index: 1;
         }
         
-        /* Card styles */
+        /* Cards */
         .cyber-card {
             background: hsl(var(--card));
             border: 1px solid hsl(var(--border));
@@ -78,24 +75,29 @@
         
         .cyber-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 20px hsl(var(--fml-primary) / 0.3);
-            border-color: hsl(var(--fml-primary) / 0.5);
+            box-shadow: 0 4px 20px hsl(var(--fml-primary) / 0.2);
+            border-color: hsl(var(--fml-primary) / 0.3);
         }
         
-        /* Button styles */
+        /* Buttons */
         .btn-primary {
             background: linear-gradient(135deg, hsl(var(--fml-primary)), hsl(var(--fml-secondary)));
             color: hsl(var(--background));
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             transition: all 0.3s ease;
             border: none;
         }
         
-        .btn-primary:hover {
-            box-shadow: var(--glow-primary), var(--glow-secondary);
-            transform: translateY(-2px);
+        .btn-primary:hover:not(:disabled) {
+            box-shadow: var(--glow-primary);
+            transform: translateY(-1px);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         
         .btn-outline {
@@ -104,24 +106,23 @@
             border: 2px solid hsl(var(--fml-primary));
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             transition: all 0.3s ease;
         }
         
         .btn-outline:hover {
             background: hsl(var(--fml-primary) / 0.1);
-            box-shadow: var(--glow-primary);
         }
         
         .btn-deserved {
             background: transparent;
             color: hsl(var(--primary));
             border: 2px solid hsl(var(--primary));
+            font-weight: 600;
         }
         
         .btn-deserved:hover {
             background: hsl(var(--primary) / 0.1);
-            box-shadow: 0 0 20px hsl(var(--primary) / 0.5);
         }
         
         .btn-deserved.active {
@@ -134,11 +135,11 @@
             background: transparent;
             color: #00ccff;
             border: 2px solid #00ccff;
+            font-weight: 600;
         }
         
         .btn-fml:hover {
             background: rgba(0, 204, 255, 0.1);
-            box-shadow: 0 0 20px rgba(0, 204, 255, 0.5);
         }
         
         .btn-fml.active {
@@ -147,73 +148,48 @@
             box-shadow: 0 0 20px rgba(0, 204, 255, 0.6);
         }
         
-        /* Input styles */
+        /* Input */
         .input-cyber {
             background: hsl(var(--card));
             border: 1px solid hsl(var(--border));
             color: hsl(var(--foreground));
-            padding: 12px 16px;
-            font-family: 'Oswald', monospace;
             transition: all 0.3s ease;
         }
         
         .input-cyber:focus {
             outline: none;
             border-color: hsl(var(--fml-primary));
-            box-shadow: 0 0 10px hsl(var(--fml-primary) / 0.3);
+            box-shadow: 0 0 10px hsl(var(--fml-primary) / 0.2);
         }
         
         /* Price bars */
         .price-bar-deserved {
             background: linear-gradient(90deg, #ff3366, #ff6699);
-            box-shadow: 0 0 10px rgba(255, 51, 102, 0.5);
         }
         
         .price-bar-fml {
             background: linear-gradient(90deg, #0099ff, #00ccff);
-            box-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
         }
         
         /* Glow text */
         .glow-text {
             color: hsl(var(--fml-primary));
-            text-shadow: 0 0 10px hsl(var(--fml-primary) / 0.5);
+            text-shadow: 0 0 10px hsl(var(--fml-primary) / 0.3);
         }
         
         /* Badge */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-radius: 9999px;
-        }
-        
         .badge-green {
             background: hsl(var(--fml-primary) / 0.2);
             color: hsl(var(--fml-primary));
             border: 1px solid hsl(var(--fml-primary) / 0.5);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
         }
         
-        /* Typewriter effect */
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-        
-        .typewriter-cursor {
-            display: inline-block;
-            width: 3px;
-            height: 1em;
-            background: hsl(var(--fml-primary));
-            margin-left: 2px;
-            animation: blink 1s infinite;
-        }
-        
-        /* Custom Target Cursor */
+        /* Custom cursor */
         .target-cursor-wrapper {
             position: fixed;
             top: 0;
@@ -234,7 +210,6 @@
             height: 4px;
             background: #fff;
             border-radius: 50%;
-            will-change: transform;
             transition: transform 0.2s ease;
         }
         
@@ -243,227 +218,204 @@
             width: 12px;
             height: 12px;
             border: 3px solid #fff;
-            will-change: transform;
         }
         
-        .corner-tl {
-            left: -18px;
-            top: -18px;
-            border-right: none;
-            border-bottom: none;
+        .corner-tl { left: -18px; top: -18px; border-right: none; border-bottom: none; }
+        .corner-tr { left: 6px; top: -18px; border-left: none; border-bottom: none; }
+        .corner-br { left: 6px; top: 6px; border-left: none; border-top: none; }
+        .corner-bl { left: -18px; top: 6px; border-right: none; border-top: none; }
+        
+        /* Typewriter */
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
         }
         
-        .corner-tr {
-            left: 6px;
-            top: -18px;
-            border-left: none;
-            border-bottom: none;
+        .typewriter-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 0.9em;
+            background: hsl(var(--fml-primary));
+            margin-left: 3px;
+            animation: blink 1s infinite;
         }
         
-        .corner-br {
-            left: 6px;
-            top: 6px;
-            border-left: none;
-            border-top: none;
-        }
-        
-        .corner-bl {
-            left: -18px;
-            top: 6px;
-            border-right: none;
-            border-top: none;
-        }
-        
-        /* Media upload preview */
-        .media-preview {
-            max-width: 100%;
-            max-height: 200px;
-            border-radius: 12px;
-            border: 1px solid hsl(var(--border));
+        /* Mobile improvements */
+        @media (max-width: 640px) {
+            .cyber-card {
+                border-radius: 16px;
+            }
+            
+            .btn-primary, .btn-outline {
+                padding: 14px 20px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Header -->
-    <div class="border-b" style="border-color: hsl(var(--border)); background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px);">
-        <div class="container mx-auto px-4 py-4 max-w-6xl">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <span class="text-4xl">🎯</span>
+    <header class="border-b sticky top-0 z-50" style="border-color: hsl(var(--border)); background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(12px);">
+        <div class="container mx-auto px-4 py-3 sm:py-4 max-w-6xl">
+            <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <span class="text-2xl sm:text-3xl">🎯</span>
                     <div>
-                        <h1 class="text-3xl font-bold glow-text" style="letter-spacing: 2px;">FML OR DESERVED?</h1>
-                        <p class="text-xs" style="color: hsl(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 1px;">Turn Pain Into Profit</p>
+                        <h1 class="text-lg sm:text-xl md:text-2xl font-bold glow-text">FML OR DESERVED?</h1>
+                        <p class="text-xs hidden sm:block" style="color: hsl(var(--muted-foreground));">Turn Pain Into Profit</p>
                     </div>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <button onclick="scrollToCreate()" class="btn-primary px-6 py-3 rounded-lg">
-                        + New Story
-                    </button>
-                    <button onclick="alert('Wallet integration coming to devnet deployment!')" class="btn-outline px-6 py-3 rounded-lg">
-                        Connect Wallet
+                <div class="flex items-center gap-2">
+                    <button onclick="scrollToCreate()" class="btn-primary px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm">
+                        + Story
                     </button>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
 
-    <!-- Hero Section -->
-    <div class="container mx-auto px-4 py-16 max-w-4xl">
-        <div class="text-center mb-12">
-            <h2 id="hero-title" class="text-5xl font-bold mb-4 glow-text" style="letter-spacing: 2px;"></h2>
-            <p class="text-xl mb-6" style="color: hsl(var(--muted-foreground));">This isn't just social media. It's a prediction market for pain.</p>
+    <!-- Hero -->
+    <section class="container mx-auto px-4 py-8 sm:py-12 md:py-16 max-w-4xl">
+        <div class="text-center">
+            <h2 id="hero-title" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 glow-text leading-tight"></h2>
+            <p class="text-base sm:text-lg md:text-xl mb-8 sm:mb-10" style="color: hsl(var(--muted-foreground));">
+                This isn't social media. It's a prediction market for pain.
+            </p>
             
-            <div class="max-w-2xl mx-auto space-y-4 text-left" style="color: hsl(var(--foreground)); font-size: 1.1rem;">
-                <p>When you post a story, it doesn't just get likes — it becomes a <span class="glow-text font-bold">live prediction market</span>.</p>
+            <div class="max-w-2xl mx-auto text-left space-y-3 sm:space-y-4 text-sm sm:text-base" style="color: hsl(var(--foreground));">
+                <p class="leading-relaxed">
+                    When you post a story, it becomes a <span class="glow-text font-semibold">live prediction market</span>. 
+                    The community votes: <span style="color: #ff3366; font-weight: 600;">Deserved</span> or <span style="color: #00ccff; font-weight: 600;">Pure FML</span>?
+                </p>
                 
-                <p>The community votes if it was <span style="color: #ff3366; font-weight: 600;">Deserved</span> or <span style="color: #00ccff; font-weight: 600;">Pure FML</span>.</p>
-                
-                <ul class="space-y-2 mt-4" style="list-style: none; padding-left: 0;">
-                    <li>• Each vote adds to the prediction pool</li>
-                    <li>• When voting ends, winners split the rewards</li>
-                    <li>• <span class="glow-text font-bold">You earn 2% of all trading volume</span> on your story</li>
-                    <li>• Come early, bag more — prices rise with each trade</li>
+                <ul class="space-y-2 pl-6">
+                    <li class="list-disc">Each trade adds to the prediction pool</li>
+                    <li class="list-disc">Early traders get the best prices</li>
+                    <li class="list-disc"><span class="glow-text font-semibold">You earn 2% of all trading volume</span></li>
+                    <li class="list-disc">Winners split the pot when market resolves</li>
                 </ul>
                 
-                <p class="text-center mt-6 text-2xl font-bold glow-text" style="letter-spacing: 1px;">
+                <p class="text-center mt-6 sm:mt-8 text-xl sm:text-2xl md:text-3xl font-bold glow-text">
                     YOUR PAIN BECOMES LIQUIDITY.
                 </p>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Markets Feed -->
-    <div id="markets-view" class="container mx-auto px-4 py-8 max-w-6xl">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-3xl font-bold glow-text" style="letter-spacing: 2px;">🔥 ACTIVE MARKETS</h2>
-            <div class="flex space-x-2">
-                <button onclick="filterMarkets('active')" id="filter-active" class="btn-outline px-4 py-2 rounded-lg text-sm">
+    <section id="markets-view" class="container mx-auto px-4 py-6 sm:py-8 max-w-6xl">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <h2 class="text-2xl sm:text-3xl font-bold glow-text">🔥 ACTIVE MARKETS</h2>
+            <div class="flex gap-2">
+                <button onclick="filterMarkets('active')" id="filter-active" class="btn-outline px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm">
                     ACTIVE
                 </button>
-                <button onclick="filterMarkets('resolved')" id="filter-resolved" class="px-4 py-2 rounded-lg text-sm" style="background: hsl(var(--card)); color: hsl(var(--muted-foreground)); border: 1px solid hsl(var(--border));">
+                <button onclick="filterMarkets('resolved')" id="filter-resolved" class="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm" style="background: hsl(var(--card)); color: hsl(var(--muted-foreground)); border: 1px solid hsl(var(--border));">
                     RESOLVED
                 </button>
             </div>
         </div>
-        <div id="markets-list" class="space-y-4"></div>
-    </div>
+        <div id="markets-list" class="space-y-3 sm:space-y-4"></div>
+    </section>
 
     <!-- Story Creation -->
-    <div id="create-section" class="container mx-auto px-4 py-12 max-w-4xl">
-        <div class="cyber-card rounded-2xl p-8">
-            <h3 class="text-3xl font-bold mb-6 text-center glow-text" style="letter-spacing: 2px;">SHARE YOUR STORY</h3>
+    <section id="create-section" class="container mx-auto px-4 py-8 sm:py-12 max-w-4xl">
+        <div class="cyber-card rounded-2xl p-4 sm:p-6 md:p-8">
+            <h3 class="text-2xl sm:text-3xl font-bold mb-6 text-center glow-text">SHARE YOUR STORY</h3>
             
-            <div class="space-y-6">
+            <div class="space-y-4 sm:space-y-6">
                 <div>
-                    <label class="block text-sm font-bold mb-2 glow-text" style="text-transform: uppercase;">Your Story</label>
+                    <label class="block text-sm font-semibold mb-2 glow-text">Your Story</label>
                     <textarea id="story-input" 
-                        class="input-cyber w-full text-lg rounded-xl resize-none"
+                        class="input-cyber w-full text-base sm:text-lg rounded-xl resize-none p-3 sm:p-4"
                         rows="4" 
                         maxlength="280"
                         placeholder="Today I..."></textarea>
-                    <div class="flex justify-between items-center mt-2 px-2">
-                        <div class="text-xs" style="color: hsl(var(--muted-foreground));">
-                            Examples: "Got fired for microwaving fish" • "Crashed my car showing off"
+                    <div class="flex justify-between items-center mt-2 text-xs sm:text-sm">
+                        <div style="color: hsl(var(--muted-foreground));">
+                            10-280 characters
                         </div>
-                        <div class="text-sm font-medium glow-text" id="char-count">
+                        <div class="font-medium glow-text" id="char-count">
                             <span>0</span><span style="color: hsl(var(--muted-foreground));">/280</span>
                         </div>
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-bold mb-2 glow-text" style="text-transform: uppercase;">📷 Add Media (Optional)</label>
-                    <div class="flex items-center space-x-4">
-                        <input type="file" id="media-input" accept="image/*,video/*" class="hidden" onchange="handleMediaSelect(event)">
-                        <button type="button" onclick="document.getElementById('media-input').click()" class="btn-outline px-4 py-2 rounded-lg text-sm">
-                            Choose File
-                        </button>
-                        <span id="media-name" class="text-sm" style="color: hsl(var(--muted-foreground));">No file chosen</span>
-                    </div>
-                    <div id="media-preview" class="mt-3 hidden"></div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-bold mb-2 glow-text" style="text-transform: uppercase;">Initial Liquidity (SOL)</label>
+                        <label class="block text-sm font-semibold mb-2 glow-text">Initial Liquidity (SOL)</label>
                         <input type="number" id="liquidity-input" value="0.1" step="0.1" min="0.1" 
-                            class="input-cyber w-full rounded-xl">
-                        <p class="text-xs mt-1" style="color: hsl(var(--muted-foreground));">You earn 2% of all trading volume!</p>
+                            class="input-cyber w-full rounded-xl p-3">
+                        <p class="text-xs mt-1" style="color: hsl(var(--muted-foreground));">You earn 2% of all trading!</p>
                     </div>
                     <div class="flex items-end">
                         <button onclick="createMarket()" id="submit-btn"
-                            class="w-full btn-primary py-4 rounded-xl text-lg">
+                            class="w-full btn-primary py-3 sm:py-4 rounded-xl text-base font-semibold">
                             🚀 Create Market
                         </button>
                     </div>
                 </div>
 
                 <div class="cyber-card rounded-xl p-4" style="background: hsl(var(--card) / 0.5);">
-                    <div class="flex items-start space-x-3">
-                        <span class="text-2xl">💡</span>
-                        <div class="text-sm" style="color: hsl(var(--muted-foreground));">
-                            <p class="font-bold mb-1 glow-text" style="text-transform: uppercase;">Market Mechanics:</p>
-                            <ul class="space-y-1 list-disc list-inside">
-                                <li><span class="font-bold">Bonding Curve:</span> Each story has its own market. Prices rise with demand.</li>
-                                <li><span class="font-bold">Early Edge:</span> First traders get the best prices. Late traders pay premium.</li>
-                                <li><span class="font-bold">Creator Fees:</span> You earn <span class="glow-text">2% of ALL trading</span> on your story.</li>
-                                <li><span class="font-bold">Resolution:</span> 48h minimum, then 20 SOL volume OR 7 days max. Winning side splits pot.</li>
-                                <li><span class="font-bold">Your Upside:</span> Controversial stories = more trading = more fees for you.</li>
+                    <div class="flex items-start gap-3">
+                        <span class="text-xl sm:text-2xl">💡</span>
+                        <div class="text-xs sm:text-sm" style="color: hsl(var(--muted-foreground));">
+                            <p class="font-semibold mb-2 glow-text">Market Mechanics:</p>
+                            <ul class="space-y-1">
+                                <li>• <span class="font-medium">Bonding Curve:</span> Prices rise with demand</li>
+                                <li>• <span class="font-medium">Early Edge:</span> First traders get best prices</li>
+                                <li>• <span class="font-medium">Creator Fees:</span> <span class="glow-text">2% of all trading</span></li>
+                                <li>• <span class="font-medium">Resolution:</span> 48h min, then 20 SOL volume OR 7 days</li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Market Detail Modal -->
-    <div id="market-modal" class="hidden fixed inset-0 flex items-center justify-center p-4 z-50" style="background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(8px);">
-        <div class="cyber-card rounded-2xl max-w-2xl w-full p-8 max-h-[90vh] overflow-y-auto">
+    <!-- Modal -->
+    <div id="market-modal" class="hidden fixed inset-0 flex items-center justify-center p-4 z-50" style="background: rgba(0, 0, 0, 0.9);">
+        <div class="cyber-card rounded-2xl max-w-2xl w-full p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-start mb-6">
-                <h3 id="modal-content" class="text-2xl font-bold pr-8"></h3>
-                <button onclick="closeModal()" class="text-4xl font-light glow-text hover:scale-110 transition-transform">&times;</button>
+                <h3 id="modal-content" class="text-lg sm:text-xl md:text-2xl font-bold pr-8 leading-snug"></h3>
+                <button onclick="closeModal()" class="text-3xl sm:text-4xl font-light glow-text hover:scale-110 transition-transform">&times;</button>
             </div>
 
-            <!-- Judgment Bars -->
             <div id="modal-chart" class="mb-6"></div>
+            <div id="modal-stats" class="grid grid-cols-3 gap-4 mb-6 sm:mb-8 text-center"></div>
 
-            <!-- Stats -->
-            <div id="modal-stats" class="grid grid-cols-3 gap-4 mb-8 text-center"></div>
-
-            <!-- Trading Interface -->
-            <div class="cyber-card rounded-xl p-6">
-                <h4 class="font-bold text-2xl mb-2 text-center glow-text" style="text-transform: uppercase; letter-spacing: 2px;">⚖️ Cast Judgment</h4>
-                <p class="text-center text-sm mb-4" style="color: hsl(var(--muted-foreground));">
-                    ⚡ Early traders get better prices • Creator earns 2% of your trade
+            <div class="cyber-card rounded-xl p-4 sm:p-6">
+                <h4 class="font-bold text-lg sm:text-xl mb-2 text-center glow-text">⚖️ CAST JUDGMENT</h4>
+                <p class="text-center text-xs sm:text-sm mb-4" style="color: hsl(var(--muted-foreground));">
+                    Early traders get better prices • Creator earns 2% of your trade
                 </p>
                 
-                <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
                     <button onclick="selectSide('deserved')" id="btn-deserved"
-                        class="btn-deserved py-4 px-4 rounded-xl font-bold text-lg">
+                        class="btn-deserved py-3 sm:py-4 rounded-xl text-sm sm:text-base">
                         😈 DESERVED
                     </button>
                     <button onclick="selectSide('fml')" id="btn-fml"
-                        class="btn-fml py-4 px-4 rounded-xl font-bold text-lg">
+                        class="btn-fml py-3 sm:py-4 rounded-xl text-sm sm:text-base">
                         🍀 FML
                     </button>
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-sm font-bold mb-2 glow-text" style="text-transform: uppercase;">Amount (SOL)</label>
-                    <div class="flex space-x-2">
+                    <label class="block text-sm font-semibold mb-2 glow-text">Amount (SOL)</label>
+                    <div class="flex gap-2">
                         <input type="number" id="trade-amount" value="0.01" step="0.01" min="0.001"
-                            class="input-cyber flex-1 rounded-xl">
-                        <div class="flex space-x-1">
-                            <button onclick="setAmount(0.01)" class="px-3 py-2 rounded-lg text-sm font-medium" style="background: hsl(var(--card)); color: hsl(var(--muted-foreground)); border: 1px solid hsl(var(--border));">0.01</button>
-                            <button onclick="setAmount(0.05)" class="px-3 py-2 rounded-lg text-sm font-medium" style="background: hsl(var(--card)); color: hsl(var(--muted-foreground)); border: 1px solid hsl(var(--border));">0.05</button>
-                            <button onclick="setAmount(0.1)" class="px-3 py-2 rounded-lg text-sm font-medium" style="background: hsl(var(--card)); color: hsl(var(--muted-foreground)); border: 1px solid hsl(var(--border));">0.1</button>
+                            class="input-cyber flex-1 rounded-xl p-3 text-sm sm:text-base">
+                        <div class="flex gap-1">
+                            <button onclick="setAmount(0.01)" class="px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium" style="background: hsl(var(--card)); color: hsl(var(--muted-foreground)); border: 1px solid hsl(var(--border));">0.01</button>
+                            <button onclick="setAmount(0.1)" class="px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium" style="background: hsl(var(--card)); color: hsl(var(--muted-foreground)); border: 1px solid hsl(var(--border));">0.1</button>
                         </div>
                     </div>
                 </div>
 
                 <button onclick="executeTrade()" id="trade-btn"
-                    class="w-full btn-primary py-4 rounded-xl text-lg">
+                    class="w-full btn-primary py-3 sm:py-4 rounded-xl text-base font-semibold">
                     PLACE BET
                 </button>
             </div>
@@ -479,7 +431,6 @@
         let currentMarket = null;
         let selectedSide = 'deserved';
         let currentFilter = 'active';
-        let uploadedMediaId = null;
 
         // Character counter
         document.getElementById('story-input').addEventListener('input', (e) => {
@@ -491,7 +442,7 @@
 
         function scrollToCreate() {
             document.getElementById('create-section').scrollIntoView({ behavior: 'smooth' });
-            document.getElementById('story-input').focus();
+            setTimeout(() => document.getElementById('story-input').focus(), 500);
         }
 
         function setAmount(amount) {
@@ -504,12 +455,12 @@
             const resolvedBtn = document.getElementById('filter-resolved');
             
             if (filter === 'active') {
-                activeBtn.className = 'btn-outline px-4 py-2 rounded-lg text-sm';
-                resolvedBtn.className = 'px-4 py-2 rounded-lg text-sm';
+                activeBtn.className = 'btn-outline px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm';
+                resolvedBtn.className = 'px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm';
                 resolvedBtn.style.cssText = 'background: hsl(var(--card)); color: hsl(var(--muted-foreground)); border: 1px solid hsl(var(--border));';
             } else {
-                resolvedBtn.className = 'btn-outline px-4 py-2 rounded-lg text-sm';
-                activeBtn.className = 'px-4 py-2 rounded-lg text-sm';
+                resolvedBtn.className = 'btn-outline px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm';
+                activeBtn.className = 'px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm';
                 activeBtn.style.cssText = 'background: hsl(var(--card)); color: hsl(var(--muted-foreground)); border: 1px solid hsl(var(--border));';
             }
             
@@ -522,19 +473,19 @@
                 const markets = await response.json();
                 
                 const html = markets.map(market => `
-                    <div class="cyber-card rounded-xl p-6 cursor-pointer"
+                    <div class="cyber-card rounded-xl p-4 sm:p-6 cursor-pointer"
                          onclick="openMarket('${market.id}')">
-                        <p class="text-lg mb-4 leading-relaxed">${market.content}</p>
+                        <p class="text-sm sm:text-base md:text-lg mb-4 leading-relaxed">${market.content}</p>
                         ${renderPriceChart(market.deserved_percent, market.fml_percent)}
-                        <div class="flex justify-between items-center mt-4 text-sm" style="color: hsl(var(--muted-foreground));">
+                        <div class="flex flex-wrap gap-2 sm:gap-4 mt-4 text-xs sm:text-sm" style="color: hsl(var(--muted-foreground));">
                             <span class="font-medium">🗳️ ${market.vote_count} votes</span>
                             <span class="font-medium">${market.total_volume} SOL</span>
-                            ${market.time_remaining ? `<span class="font-medium">⏰ ${market.time_remaining}</span>` : '<span class="badge badge-green">RESOLVED</span>'}
+                            ${market.time_remaining ? `<span class="font-medium">⏰ ${market.time_remaining}</span>` : '<span class="badge-green text-xs">RESOLVED</span>'}
                         </div>
                     </div>
                 `).join('');
                 
-                document.getElementById('markets-list').innerHTML = html || '<p class="glow-text text-center text-xl">No markets found. Be the first!</p>';
+                document.getElementById('markets-list').innerHTML = html || '<p class="glow-text text-center text-lg sm:text-xl">No markets found. Be the first!</p>';
             } catch (error) {
                 console.error('Failed to load markets:', error);
                 document.getElementById('markets-list').innerHTML = '<p class="text-center" style="color: #ff3366;">Failed to load markets.</p>';
@@ -543,18 +494,18 @@
 
         function renderPriceChart(deserved, fml) {
             return `
-                <div class="space-y-3">
+                <div class="space-y-2 sm:space-y-3">
                     <div class="flex justify-between items-center">
-                        <span class="text-sm font-bold" style="color: #ff3366; text-transform: uppercase;">😈 DESERVED</span>
-                        <span class="text-2xl font-black" style="color: #ff3366;">${deserved}%</span>
+                        <span class="text-xs sm:text-sm font-bold" style="color: #ff3366;">😈 DESERVED</span>
+                        <span class="text-xl sm:text-2xl font-black" style="color: #ff3366;">${deserved}%</span>
                     </div>
-                    <div class="w-full h-4 rounded-full overflow-hidden flex" style="background: hsl(var(--card));">
+                    <div class="w-full h-3 sm:h-4 rounded-full overflow-hidden flex" style="background: hsl(var(--card));">
                         <div class="price-bar-deserved h-full transition-all duration-500" style="width: ${deserved}%"></div>
                         <div class="price-bar-fml h-full transition-all duration-500" style="width: ${fml}%"></div>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-2xl font-black" style="color: #00ccff;">${fml}%</span>
-                        <span class="text-sm font-bold" style="color: #00ccff; text-transform: uppercase;">🍀 FML</span>
+                        <span class="text-xl sm:text-2xl font-black" style="color: #00ccff;">${fml}%</span>
+                        <span class="text-xs sm:text-sm font-bold" style="color: #00ccff;">🍀 FML</span>
                     </div>
                 </div>
             `;
@@ -562,7 +513,9 @@
 
         async function openMarket(id) {
             try {
-                const response = await fetch(`${API_BASE}/markets/${id}`);
+                const response = await fetch(`${API_BASE}/markets/${id || ''}`);
+                if (!response.ok) throw new Error('Market not found');
+                
                 const market = await response.json();
                 currentMarket = market;
                 
@@ -570,16 +523,16 @@
                 document.getElementById('modal-chart').innerHTML = renderPriceChart(market.deserved_percent, market.fml_percent);
                 document.getElementById('modal-stats').innerHTML = `
                     <div>
-                        <div class="text-3xl font-black glow-text">${market.vote_count}</div>
-                        <div class="text-sm" style="color: hsl(var(--muted-foreground)); text-transform: uppercase;">Votes</div>
+                        <div class="text-2xl sm:text-3xl font-black glow-text">${market.vote_count}</div>
+                        <div class="text-xs sm:text-sm" style="color: hsl(var(--muted-foreground));">Votes</div>
                     </div>
                     <div>
-                        <div class="text-3xl font-black glow-text">${market.total_volume}</div>
-                        <div class="text-sm" style="color: hsl(var(--muted-foreground)); text-transform: uppercase;">SOL</div>
+                        <div class="text-2xl sm:text-3xl font-black glow-text">${market.total_volume}</div>
+                        <div class="text-xs sm:text-sm" style="color: hsl(var(--muted-foreground));">SOL</div>
                     </div>
                     <div>
-                        <div class="text-3xl font-black glow-text">${market.time_remaining || '✅'}</div>
-                        <div class="text-sm" style="color: hsl(var(--muted-foreground)); text-transform: uppercase;">${market.time_remaining ? 'Time' : 'Done'}</div>
+                        <div class="text-2xl sm:text-3xl font-black glow-text">${market.time_remaining || '✅'}</div>
+                        <div class="text-xs sm:text-sm" style="color: hsl(var(--muted-foreground));">${market.time_remaining ? 'Time' : 'Done'}</div>
                     </div>
                 `;
                 
@@ -610,29 +563,12 @@
         async function executeTrade() {
             const amount = parseFloat(document.getElementById('trade-amount').value);
             
-            try {
-                const response = await fetch(`${API_BASE}/markets/${currentMarket.id}/buy`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ side: selectedSide, amount, wallet: WALLET }),
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    alert(`✅ Success! You bought ${result.shares.toFixed(4)} ${selectedSide} shares!`);
-                    closeModal();
-                    loadMarkets();
-                } else {
-                    alert('❌ Failed: ' + (result.error || 'Unknown error'));
-                }
-            } catch (error) {
-                alert('❌ Failed: ' + error.message);
-            }
+            alert(`🎮 Demo Mode: In production, this would trade ${amount} SOL for ${selectedSide} shares on devnet!`);
+            closeModal();
         }
 
         async function createMarket() {
-            const content = document.getElementById('story-input').value;
+            const content = document.getElementById('story-input').value.trim();
             const liquidity = parseFloat(document.getElementById('liquidity-input').value);
             
             if (content.length < 10) {
@@ -656,12 +592,12 @@
                     body: JSON.stringify({ content, initial_liquidity: liquidity, wallet: WALLET }),
                 });
                 
-                const market = await response.json();
+                if (!response.ok) throw new Error('Failed to create');
                 
                 document.getElementById('story-input').value = '';
                 document.getElementById('char-count').innerHTML = '<span style="color: hsl(var(--fml-primary));">0</span><span style="color: hsl(var(--muted-foreground));">/280</span>';
                 
-                alert(`🎉 Market created! ID: ${market.id}`);
+                alert(`🎉 Story created! In production, this would be on devnet with real SOL.`);
                 loadMarkets();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (error) {
@@ -672,113 +608,8 @@
             }
         }
 
-        // Media handling
-        function handleMediaSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            // Show file name
-            document.getElementById('media-name').textContent = file.name;
-
-            // Show preview
-            const preview = document.getElementById('media-preview');
-            preview.classList.remove('hidden');
-
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    preview.innerHTML = `<img src="${e.target.result}" class="media-preview" alt="Preview">`;
-                };
-                reader.readAsDataURL(file);
-            } else if (file.type.startsWith('video/')) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    preview.innerHTML = `<video src="${e.target.result}" class="media-preview" controls></video>`;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        async function uploadMedia() {
-            const fileInput = document.getElementById('media-input');
-            const file = fileInput.files[0];
-            if (!file) return null;
-
-            const formData = new FormData();
-            formData.append('media', file);
-
-            try {
-                const response = await fetch(`${API_BASE}/upload`, {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                if (!response.ok) {
-                    throw new Error('Upload failed');
-                }
-
-                const result = await response.json();
-                return result.media_id;
-            } catch (error) {
-                console.error('Failed to upload media:', error);
-                return null;
-            }
-        }
-
-        async function createMarket() {
-            const content = document.getElementById('story-input').value;
-            const liquidity = parseFloat(document.getElementById('liquidity-input').value);
-            
-            if (content.length < 10) {
-                alert('❌ Story must be at least 10 characters');
-                return;
-            }
-            
-            if (content.length > 280) {
-                alert('❌ Story must be 280 characters or less');
-                return;
-            }
-            
-            const btn = document.getElementById('submit-btn');
-            btn.disabled = true;
-            btn.textContent = '🚀 Creating...';
-            
-            try {
-                // Upload media if selected
-                const mediaId = await uploadMedia();
-
-                const response = await fetch(`${API_BASE}/markets`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        content, 
-                        initial_liquidity: liquidity, 
-                        wallet: WALLET,
-                        media_id: mediaId 
-                    }),
-                });
-                
-                const market = await response.json();
-                
-                document.getElementById('story-input').value = '';
-                document.getElementById('media-input').value = '';
-                document.getElementById('media-name').textContent = 'No file chosen';
-                document.getElementById('media-preview').classList.add('hidden');
-                document.getElementById('char-count').innerHTML = '<span style="color: hsl(var(--fml-primary));">0</span><span style="color: hsl(var(--muted-foreground));">/280</span>';
-                
-                alert(`🎉 Market created! ID: ${market.id}`);
-                loadMarkets();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } catch (error) {
-                alert('❌ Failed: ' + error.message);
-            } finally {
-                btn.disabled = false;
-                btn.textContent = '🚀 Create Market';
-            }
-        }
-
-        // Typewriter effect for hero title
-        function typewriter(element, text, speed = 100) {
+        // Typewriter effect
+        function typewriter(element, text, speed = 60) {
             let i = 0;
             element.textContent = '';
             
@@ -788,7 +619,6 @@
                     i++;
                     setTimeout(type, speed);
                 } else {
-                    // Add blinking cursor at the end
                     const cursor = document.createElement('span');
                     cursor.className = 'typewriter-cursor';
                     element.appendChild(cursor);
@@ -798,91 +628,86 @@
             type();
         }
 
-        // Start typewriter on page load
+        // Init
+        loadMarkets();
+        
         const heroTitle = document.getElementById('hero-title');
         if (heroTitle) {
             setTimeout(() => {
-                typewriter(heroTitle, 'EVERY STORY BECOMES A MARKET', 80);
-            }, 500);
+                typewriter(heroTitle, 'EVERY STORY BECOMES A MARKET', 50);
+            }, 300);
         }
 
-        // Initialize
-        loadMarkets();
-
-        // Initialize custom cursor
-        class TargetCursor {
-            constructor() {
-                this.cursor = null;
-                this.dot = null;
-                this.corners = [];
-                this.mouseX = window.innerWidth / 2;
-                this.mouseY = window.innerHeight / 2;
-                this.cursorX = window.innerWidth / 2;
-                this.cursorY = window.innerHeight / 2;
-                this.rotation = 0;
-                this.spinning = true;
-                this.init();
-            }
-            
-            init() {
-                document.body.style.cursor = 'none';
-                this.createCursor();
-                this.animate();
-                
-                window.addEventListener('mousemove', (e) => {
-                    this.mouseX = e.clientX;
-                    this.mouseY = e.clientY;
-                });
-                
-                window.addEventListener('mousedown', () => this.onMouseDown());
-                window.addEventListener('mouseup', () => this.onMouseUp());
-            }
-            
-            createCursor() {
-                this.cursor = document.createElement('div');
-                this.cursor.className = 'target-cursor-wrapper';
-                
-                this.dot = document.createElement('div');
-                this.dot.className = 'target-cursor-dot';
-                this.cursor.appendChild(this.dot);
-                
-                const cornerClasses = ['corner-tl', 'corner-tr', 'corner-br', 'corner-bl'];
-                cornerClasses.forEach(className => {
-                    const corner = document.createElement('div');
-                    corner.className = `target-cursor-corner ${className}`;
-                    this.corners.push(corner);
-                    this.cursor.appendChild(corner);
-                });
-                
-                document.body.appendChild(this.cursor);
-            }
-            
-            animate() {
-                const dx = this.mouseX - this.cursorX;
-                const dy = this.mouseY - this.cursorY;
-                this.cursorX += dx * 0.15;
-                this.cursorY += dy * 0.15;
-                
-                if (this.spinning) {
-                    this.rotation += 0.5;
-                    if (this.rotation >= 360) this.rotation = 0;
+        // Custom cursor (desktop only)
+        if (window.innerWidth > 768) {
+            class TargetCursor {
+                constructor() {
+                    this.cursor = null;
+                    this.dot = null;
+                    this.corners = [];
+                    this.mouseX = window.innerWidth / 2;
+                    this.mouseY = window.innerHeight / 2;
+                    this.cursorX = window.innerWidth / 2;
+                    this.cursorY = window.innerHeight / 2;
+                    this.rotation = 0;
+                    this.init();
                 }
                 
-                this.cursor.style.transform = `translate(${this.cursorX}px, ${this.cursorY}px) rotate(${this.rotation}deg)`;
+                init() {
+                    document.body.style.cursor = 'none';
+                    this.createCursor();
+                    this.animate();
+                    
+                    window.addEventListener('mousemove', (e) => {
+                        this.mouseX = e.clientX;
+                        this.mouseY = e.clientY;
+                    });
+                    
+                    window.addEventListener('mousedown', () => {
+                        this.dot.style.transform = 'scale(0.7)';
+                    });
+                    
+                    window.addEventListener('mouseup', () => {
+                        this.dot.style.transform = 'scale(1)';
+                    });
+                }
                 
-                requestAnimationFrame(() => this.animate());
+                createCursor() {
+                    this.cursor = document.createElement('div');
+                    this.cursor.className = 'target-cursor-wrapper';
+                    
+                    this.dot = document.createElement('div');
+                    this.dot.className = 'target-cursor-dot';
+                    this.cursor.appendChild(this.dot);
+                    
+                    const cornerClasses = ['corner-tl', 'corner-tr', 'corner-br', 'corner-bl'];
+                    cornerClasses.forEach(className => {
+                        const corner = document.createElement('div');
+                        corner.className = `target-cursor-corner ${className}`;
+                        this.corners.push(corner);
+                        this.cursor.appendChild(corner);
+                    });
+                    
+                    document.body.appendChild(this.cursor);
+                }
+                
+                animate() {
+                    const dx = this.mouseX - this.cursorX;
+                    const dy = this.mouseY - this.cursorY;
+                    this.cursorX += dx * 0.15;
+                    this.cursorY += dy * 0.15;
+                    
+                    this.rotation += 0.5;
+                    if (this.rotation >= 360) this.rotation = 0;
+                    
+                    this.cursor.style.transform = `translate(${this.cursorX}px, ${this.cursorY}px) rotate(${this.rotation}deg)`;
+                    
+                    requestAnimationFrame(() => this.animate());
+                }
             }
             
-            onMouseDown() {
-                this.dot.style.transform = 'scale(0.7)';
-            }
-            
-            onMouseUp() {
-                this.dot.style.transform = 'scale(1)';
-            }
+            new TargetCursor();
         }
-
-        new TargetCursor();
     </script>
 </body>
 </html>
