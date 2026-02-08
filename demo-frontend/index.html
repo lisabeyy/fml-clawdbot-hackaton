@@ -197,6 +197,75 @@
             color: hsl(var(--fml-primary));
             border: 1px solid hsl(var(--fml-primary) / 0.5);
         }
+        
+        /* Custom Target Cursor */
+        .target-cursor-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            will-change: transform;
+        }
+        
+        .target-cursor-dot {
+            position: absolute;
+            left: -2px;
+            top: -2px;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            will-change: transform;
+            transition: transform 0.2s ease;
+        }
+        
+        .target-cursor-corner {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border: 3px solid #fff;
+            will-change: transform;
+        }
+        
+        .corner-tl {
+            left: -18px;
+            top: -18px;
+            border-right: none;
+            border-bottom: none;
+        }
+        
+        .corner-tr {
+            left: 6px;
+            top: -18px;
+            border-left: none;
+            border-bottom: none;
+        }
+        
+        .corner-br {
+            left: 6px;
+            top: 6px;
+            border-left: none;
+            border-top: none;
+        }
+        
+        .corner-bl {
+            left: -18px;
+            top: 6px;
+            border-right: none;
+            border-top: none;
+        }
+        
+        /* Media upload preview */
+        .media-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 12px;
+            border: 1px solid hsl(var(--border));
+        }
     </style>
 </head>
 <body>
@@ -263,6 +332,18 @@
                             <span>0</span><span style="color: hsl(var(--muted-foreground));">/280</span>
                         </div>
                     </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2 glow-text" style="text-transform: uppercase;">📷 Add Media (Optional)</label>
+                    <div class="flex items-center space-x-4">
+                        <input type="file" id="media-input" accept="image/*,video/*" class="hidden" onchange="handleMediaSelect(event)">
+                        <button type="button" onclick="document.getElementById('media-input').click()" class="btn-outline px-4 py-2 rounded-lg text-sm">
+                            Choose File
+                        </button>
+                        <span id="media-name" class="text-sm" style="color: hsl(var(--muted-foreground));">No file chosen</span>
+                    </div>
+                    <div id="media-preview" class="mt-3 hidden"></div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -357,6 +438,7 @@
         let currentMarket = null;
         let selectedSide = 'deserved';
         let currentFilter = 'active';
+        let uploadedMediaId = null;
 
         // Character counter
         document.getElementById('story-input').addEventListener('input', (e) => {
@@ -549,8 +631,188 @@
             }
         }
 
+        // Media handling
+        function handleMediaSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Show file name
+            document.getElementById('media-name').textContent = file.name;
+
+            // Show preview
+            const preview = document.getElementById('media-preview');
+            preview.classList.remove('hidden');
+
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.innerHTML = `<img src="${e.target.result}" class="media-preview" alt="Preview">`;
+                };
+                reader.readAsDataURL(file);
+            } else if (file.type.startsWith('video/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.innerHTML = `<video src="${e.target.result}" class="media-preview" controls></video>`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function uploadMedia() {
+            const fileInput = document.getElementById('media-input');
+            const file = fileInput.files[0];
+            if (!file) return null;
+
+            const formData = new FormData();
+            formData.append('media', file);
+
+            try {
+                const response = await fetch(`${API_BASE}/upload`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Upload failed');
+                }
+
+                const result = await response.json();
+                return result.media_id;
+            } catch (error) {
+                console.error('Failed to upload media:', error);
+                return null;
+            }
+        }
+
+        async function createMarket() {
+            const content = document.getElementById('story-input').value;
+            const liquidity = parseFloat(document.getElementById('liquidity-input').value);
+            
+            if (content.length < 10) {
+                alert('❌ Story must be at least 10 characters');
+                return;
+            }
+            
+            if (content.length > 280) {
+                alert('❌ Story must be 280 characters or less');
+                return;
+            }
+            
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+            btn.textContent = '🚀 Creating...';
+            
+            try {
+                // Upload media if selected
+                const mediaId = await uploadMedia();
+
+                const response = await fetch(`${API_BASE}/markets`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        content, 
+                        initial_liquidity: liquidity, 
+                        wallet: WALLET,
+                        media_id: mediaId 
+                    }),
+                });
+                
+                const market = await response.json();
+                
+                document.getElementById('story-input').value = '';
+                document.getElementById('media-input').value = '';
+                document.getElementById('media-name').textContent = 'No file chosen';
+                document.getElementById('media-preview').classList.add('hidden');
+                document.getElementById('char-count').innerHTML = '<span style="color: hsl(var(--fml-primary));">0</span><span style="color: hsl(var(--muted-foreground));">/280</span>';
+                
+                alert(`🎉 Market created! ID: ${market.id}`);
+                loadMarkets();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (error) {
+                alert('❌ Failed: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🚀 Create Market';
+            }
+        }
+
         // Initialize
         loadMarkets();
+
+        // Initialize custom cursor
+        class TargetCursor {
+            constructor() {
+                this.cursor = null;
+                this.dot = null;
+                this.corners = [];
+                this.mouseX = window.innerWidth / 2;
+                this.mouseY = window.innerHeight / 2;
+                this.cursorX = window.innerWidth / 2;
+                this.cursorY = window.innerHeight / 2;
+                this.rotation = 0;
+                this.spinning = true;
+                this.init();
+            }
+            
+            init() {
+                document.body.style.cursor = 'none';
+                this.createCursor();
+                this.animate();
+                
+                window.addEventListener('mousemove', (e) => {
+                    this.mouseX = e.clientX;
+                    this.mouseY = e.clientY;
+                });
+                
+                window.addEventListener('mousedown', () => this.onMouseDown());
+                window.addEventListener('mouseup', () => this.onMouseUp());
+            }
+            
+            createCursor() {
+                this.cursor = document.createElement('div');
+                this.cursor.className = 'target-cursor-wrapper';
+                
+                this.dot = document.createElement('div');
+                this.dot.className = 'target-cursor-dot';
+                this.cursor.appendChild(this.dot);
+                
+                const cornerClasses = ['corner-tl', 'corner-tr', 'corner-br', 'corner-bl'];
+                cornerClasses.forEach(className => {
+                    const corner = document.createElement('div');
+                    corner.className = `target-cursor-corner ${className}`;
+                    this.corners.push(corner);
+                    this.cursor.appendChild(corner);
+                });
+                
+                document.body.appendChild(this.cursor);
+            }
+            
+            animate() {
+                const dx = this.mouseX - this.cursorX;
+                const dy = this.mouseY - this.cursorY;
+                this.cursorX += dx * 0.15;
+                this.cursorY += dy * 0.15;
+                
+                if (this.spinning) {
+                    this.rotation += 0.5;
+                    if (this.rotation >= 360) this.rotation = 0;
+                }
+                
+                this.cursor.style.transform = `translate(${this.cursorX}px, ${this.cursorY}px) rotate(${this.rotation}deg)`;
+                
+                requestAnimationFrame(() => this.animate());
+            }
+            
+            onMouseDown() {
+                this.dot.style.transform = 'scale(0.7)';
+            }
+            
+            onMouseUp() {
+                this.dot.style.transform = 'scale(1)';
+            }
+        }
+
+        new TargetCursor();
     </script>
 </body>
 </html>

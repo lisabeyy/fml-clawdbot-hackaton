@@ -1,29 +1,46 @@
 import express from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { AMMSimulator } from './amm.js';
 import { DataStore } from './store.js';
 import { SolanaDevnet } from './solana-devnet.js';
+import { Database } from './database.js';
+import { upload } from './multer-config.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Check if devnet mode is enabled
 const DEVNET_ENABLED = process.env.SOLANA_DEVNET === 'true';
+const USE_DATABASE = process.env.USE_DATABASE !== 'false'; // Default to true
 
 // Initialize
 const amm = new AMMSimulator();
 const store = new DataStore();
 const solana = new SolanaDevnet();
+const db = new Database();
 
-// Seed with example markets (only in simulation mode)
-if (!DEVNET_ENABLED) {
-  store.seedExamples();
+// Initialize database
+if (USE_DATABASE) {
+  await db.initialize();
+} else {
+  // Seed with example markets (only in simulation mode without database)
+  if (!DEVNET_ENABLED) {
+    store.seedExamples();
+  }
 }
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve media files
+app.use('/media', express.static(path.join(__dirname, 'data', 'media')));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -116,10 +133,47 @@ app.get('/api/markets/:id', (req, res) => {
   }
 });
 
-// POST /api/markets - Create new market
-app.post('/api/markets', (req, res) => {
+// POST /api/upload - Upload media
+app.post('/api/upload', upload.single('media'), async (req, res) => {
   try {
-    const { content, initial_liquidity, wallet } = req.body;
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    if (!USE_DATABASE) {
+      return res.status(501).json({ error: 'Media uploads require database mode' });
+    }
+
+    const id = `media_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const ext = path.extname(req.file.originalname);
+    const filename = `${id}${ext}`;
+
+    const media = await db.saveMedia(
+      id,
+      filename,
+      req.file.buffer,
+      req.file.mimetype
+    );
+
+    console.log(`📎 Media uploaded: ${filename} (${(req.file.size / 1024).toFixed(2)} KB)`);
+
+    res.json({
+      success: true,
+      media_id: media.id,
+      url: media.path,
+      filename: media.filename,
+      size: req.file.size,
+    });
+  } catch (error) {
+    console.error('Error uploading media:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/markets - Create new market
+app.post('/api/markets', async (req, res) => {
+  try {
+    const { content, initial_liquidity, wallet, media_id } = req.body;
 
     // Validation
     if (!content || content.length < 10) {
@@ -138,7 +192,20 @@ app.post('/api/markets', (req, res) => {
       wallet || 'anonymous'
     );
 
-    console.log(`✅ Market created: ${market.id} - "${content.substring(0, 50)}..."`);
+    // Attach media if provided
+    if (media_id && USE_DATABASE) {
+      const media = await db.getMedia(media_id);
+      if (media) {
+        market.media = media.path;
+      }
+    }
+
+    // Save to database if enabled
+    if (USE_DATABASE) {
+      await db.createMarket(market);
+    }
+
+    console.log(`✅ Market created: ${market.id} - "${content.substring(0, 50)}..."${media_id ? ' [with media]' : ''}`);
 
     res.status(201).json(formatMarket(market));
   } catch (error) {
